@@ -24,22 +24,29 @@ model HotelOwner {
 model Hotel {
   id          Int    @id @default(autoincrement())
   ownerId     Int
-  rooms       Int
   location    String
   phoneNumber String
   price       Int
 
   owner HotelOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  Room  Room[]
+  rooms Room[]
+}
+
+model RoomType {
+  id   Int    @id @default(autoincrement())
+  type String @unique
+  Room Room[]
 }
 
 model Room {
   id         Int @id @default(autoincrement())
   hotelId    Int
   roomNumber Int
+  roomTypeId Int
 
-  hotel        Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  BookingHotel BookingHotel[]
+  hotel    Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  roomType RoomType       @relation(fields: [roomTypeId], references: [id], onDelete: Restrict)
+  bookings BookingHotel[]
 }
 
 model BusOwner {
@@ -52,21 +59,36 @@ model BusOwner {
 model Bus {
   id      Int      @id @default(autoincrement())
   ownerId Int
-  seats   Int
   from    String
   to      String
   date    DateTime
   number  String   @unique
 
-  owner      BusOwner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  BookingBus BookingBus[]
+  owner    BusOwner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  bookings BookingBus[]
+  busSeats BusSeat[]
+}
+
+model SeatType {
+  id      Int       @id @default(autoincrement())
+  type    String    @unique
+  BusSeat BusSeat[]
+}
+
+model BusSeat {
+  id         Int @id @default(autoincrement())
+  busId      Int
+  seatTypeId Int
+
+  bus      Bus      @relation(fields: [busId], references: [id], onDelete: Cascade)
+  seatType SeatType @relation(fields: [seatTypeId], references: [id], onDelete: Restrict)
 }
 
 model User {
   id          Int    @id @default(autoincrement())
   name        String
   email       String @unique
-  phoneNumber Int
+  phoneNumber String
 
   busBookings   BookingBus[]
   hotelBookings BookingHotel[]
@@ -81,10 +103,10 @@ model Admin {
 model TravelAgent {
   id          Int    @id @default(autoincrement())
   name        String
-  phoneNumber Int
+  phoneNumber String
 
-  BookingBus   BookingBus[]
-  BookingHotel BookingHotel[]
+  busBookings   BookingBus[]
+  hotelBookings BookingHotel[]
 }
 
 model BookingBus {
@@ -93,6 +115,7 @@ model BookingBus {
   travelerAgentId Int?
   busId           Int
   date            DateTime
+  paymentStatus   Boolean
 
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   bus           Bus          @relation(fields: [busId], references: [id], onDelete: Cascade)
@@ -108,6 +131,7 @@ model BookingHotel {
   travelerAgentId Int?
   dateFrom        DateTime
   dateTo          DateTime
+  paymentStatus   Boolean
 
   room          Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
