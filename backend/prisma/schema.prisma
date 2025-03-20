@@ -25,16 +25,17 @@ model Hotel {
   id          Int    @id @default(autoincrement())
   ownerId     Int
   location    String
-  phoneNumber String
-  price       Int
+  phoneNumber Int
 
   owner HotelOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   rooms Room[]
 }
 
 model RoomType {
-  id   Int    @id @default(autoincrement())
-  type String @unique
+  id    Int    @id @default(autoincrement())
+  type  String @unique
+  price Int
+
   Room Room[]
 }
 
@@ -57,12 +58,12 @@ model BusOwner {
 }
 
 model Bus {
-  id      Int      @id @default(autoincrement())
-  ownerId Int
-  from    String
-  to      String
-  date    DateTime
-  number  String   @unique
+  id          Int      @id @default(autoincrement())
+  ownerId     Int
+  from        String
+  to          String
+  date        DateTime
+  phoneNumber Int      @unique
 
   owner    BusOwner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   bookings BookingBus[]
@@ -70,8 +71,10 @@ model Bus {
 }
 
 model SeatType {
-  id      Int       @id @default(autoincrement())
-  type    String    @unique
+  id    Int    @id @default(autoincrement())
+  type  String @unique
+  price Int
+
   BusSeat BusSeat[]
 }
 
