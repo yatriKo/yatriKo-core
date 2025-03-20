@@ -14,9 +14,10 @@ datasource db {
 }
 
 model HotelOwner {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
 
   hotels Hotel[]
 }
@@ -51,8 +52,9 @@ model Room {
 }
 
 model BusOwner {
-  id   Int    @id @default(autoincrement())
-  name String
+  id       Int    @id @default(autoincrement())
+  name     String
+  password String
 
   buses Bus[]
 }
@@ -92,21 +94,24 @@ model User {
   name        String
   email       String @unique
   phoneNumber String
+  password    String
 
   busBookings   BookingBus[]
   hotelBookings BookingHotel[]
 }
 
 model Admin {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
 }
 
 model TravelAgent {
   id          Int    @id @default(autoincrement())
   name        String
   phoneNumber String
+  password    String
 
   busBookings   BookingBus[]
   hotelBookings BookingHotel[]
