@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model HotelOwner {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+
+  hotels Hotel[]
+}
+
+model Hotel {
+  id          Int    @id @default(autoincrement())
+  ownerId     Int
+  rooms       Int
+  location    String
+  phoneNumber String
+  price       Int
+
+  owner HotelOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  Room  Room[]
+}
+
+model Room {
+  id         Int @id @default(autoincrement())
+  hotelId    Int
+  roomNumber Int
+
+  hotel        Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  BookingHotel BookingHotel[]
+}
+
+model BusOwner {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  buses Bus[]
+}
+
+model Bus {
+  id      Int      @id @default(autoincrement())
+  ownerId Int
+  seats   Int
+  from    String
+  to      String
+  date    DateTime
+  number  String   @unique
+
+  owner      BusOwner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  BookingBus BookingBus[]
+}
+
+model User {
+  id          Int    @id @default(autoincrement())
+  name        String
+  email       String @unique
+  phoneNumber Int
+
+  busBookings   BookingBus[]
+  hotelBookings BookingHotel[]
+}
+
+model Admin {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+}
+
+model TravelAgent {
+  id          Int    @id @default(autoincrement())
+  name        String
+  phoneNumber Int
+
+  BookingBus   BookingBus[]
+  BookingHotel BookingHotel[]
+}
+
+model BookingBus {
+  id              Int      @id @default(autoincrement())
+  userId          Int?
+  travelerAgentId Int?
+  busId           Int
+  date            DateTime
+
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bus           Bus          @relation(fields: [busId], references: [id], onDelete: Cascade)
+  travelerAgent TravelAgent? @relation(fields: [travelerAgentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, busId, date])
+}
+
+model BookingHotel {
+  id              Int      @id @default(autoincrement())
+  roomId          Int
+  userId          Int?
+  travelerAgentId Int?
+  dateFrom        DateTime
+  dateTo          DateTime
+
+  room          Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  travelerAgent TravelAgent? @relation(fields: [travelerAgentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roomId, dateFrom, dateTo])
+}
