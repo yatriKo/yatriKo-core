@@ -1,18 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import * as bcrypt from 'bcrypt';
-
-type AuthResult = {
-  accessToken: string;
-  expiresIn: string;
-};
-
-export type JwtPayload = {
-  sub: number;
-  username: string;
-};
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { UserResponseDto } from './dto/user-response.dto';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -21,22 +19,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async logIn(email: string, pass: string): Promise<AuthResult> {
+  async logIn(email: string, pass: string): Promise<LoginResponseDto> {
     const user = await this.usersService.findOne(email);
     if (!user) {
       throw new UnauthorizedException();
     }
-    try {
-      const isMatch: boolean = await bcrypt.compare(pass, user.password);
-      if (!isMatch) {
-        throw new UnauthorizedException();
-      }
-    } catch (error) {
-      if (error instanceof UnauthorizedException) throw UnauthorizedException;
-      throw new Error('BCRYPT PASSWORD MATCH ERROR: ', error);
+    const isMatch: boolean = await bcrypt.compare(pass, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException();
     }
 
-    const payload: JwtPayload = { sub: user.id, username: user.email };
+    const payload = { sub: user.id, username: user.email };
 
     try {
       const token = await this.jwtService.signAsync(payload);
@@ -45,5 +38,22 @@ export class AuthService {
     } catch (error) {
       throw new Error('JWT ERROR: ', error);
     }
+  }
+
+  async signUp(userDetails: CreateUserDto) {
+    const usercheck = await this.usersService.findOne(userDetails.email);
+    if (usercheck)
+      throw new BadRequestException(
+        'User with this email address already exists',
+      );
+    const hashedPassword = await bcrypt.hash(
+      userDetails.password,
+      Number(process.env.BCRYPT_SALT),
+    );
+    const user = await this.usersService.createUser({
+      ...userDetails,
+      password: hashedPassword,
+    });
+    return instanceToPlain(new UserResponseDto(user));
   }
 }

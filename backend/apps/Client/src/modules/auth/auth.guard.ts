@@ -6,7 +6,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
-import { JwtPayload } from './auth.service';
+
+interface JwtPayload {
+  sub: number;
+  username: string;
+}
 
 interface AuthorizationHeader extends Headers {
   authorization?: string;

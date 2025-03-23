@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
-import { AuthService, JwtPayload } from './auth.service';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { AuthService } from './auth.service';
 import { IsEmail, IsString } from 'class-validator';
-import { AuthGuard } from './auth.guard';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 class UserLogInDto {
   @IsEmail()
@@ -26,13 +17,13 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  logIn(@Body() logInDto: UserLogInDto) {
-    return this.authService.logIn(logInDto.email, logInDto.password);
+  logIn(@Body() logInData: UserLogInDto) {
+    return this.authService.logIn(logInData.email, logInData.password);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req): JwtPayload {
-    return req.user;
+  @HttpCode(HttpStatus.OK)
+  @Post('sign-up')
+  signUp(@Body() signUpData: CreateUserDto) {
+    return this.authService.signUp(signUpData);
   }
 }
