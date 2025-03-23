@@ -1,9 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/apps/backend",
-    "module": "CommonJS",
-    "types": ["node"]
+    "declaration": false,
+    "outDir": "../../dist/apps/client"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
