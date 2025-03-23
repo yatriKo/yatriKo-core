@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { FindHotelDto } from './dto/find-all-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
@@ -49,7 +49,7 @@ export class HotelService {
   async findAll(findAllHotelDto: FindHotelDto) {
     const { id, location, price, roomType } = findAllHotelDto;
 
-    return this.prismaService.hotel.findMany({
+    const hotels = this.prismaService.hotel.findMany({
       where: {
         id,
         location,
@@ -70,6 +70,10 @@ export class HotelService {
         rooms: true,
       },
     });
+
+    if (!hotel) {
+      throw new NotFoundException(`Hotel with ID ${id} not found`);
+    }
 
     return hotel;
   }
