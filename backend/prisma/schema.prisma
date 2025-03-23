@@ -32,22 +32,13 @@ model Hotel {
   rooms Room[]
 }
 
-model RoomType {
-  id    Int    @id @default(autoincrement())
-  type  String @unique
-  price Int
-
-  Room Room[]
-}
-
 model Room {
-  id         Int @id @default(autoincrement())
-  hotelId    Int
-  roomNumber Int
-  roomTypeId Int
+  id       Int    @id @default(autoincrement())
+  hotelId  Int
+  roomType String @default("Standard")
+  price    Int    @default(0)
 
   hotel    Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  roomType RoomType       @relation(fields: [roomTypeId], references: [id], onDelete: Restrict)
   bookings BookingHotel[]
 }
 
@@ -72,21 +63,13 @@ model Bus {
   busSeats BusSeat[]
 }
 
-model SeatType {
-  id    Int    @id @default(autoincrement())
-  type  String @unique
-  price Int
-
-  BusSeat BusSeat[]
-}
-
 model BusSeat {
-  id         Int @id @default(autoincrement())
-  busId      Int
-  seatTypeId Int
+  id       Int    @id @default(autoincrement())
+  busId    Int
+  seatType String
+  price    Int
 
-  bus      Bus      @relation(fields: [busId], references: [id], onDelete: Cascade)
-  seatType SeatType @relation(fields: [seatTypeId], references: [id], onDelete: Restrict)
+  bus Bus @relation(fields: [busId], references: [id], onDelete: Cascade)
 }
 
 model User {
