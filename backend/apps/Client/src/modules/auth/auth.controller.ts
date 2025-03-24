@@ -1,15 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { IsEmail, IsString } from 'class-validator';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-
-class UserLogInDto {
-  @IsEmail()
-  readonly email: string;
-
-  @IsString()
-  readonly password: string;
-}
+import { UserLogInDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,10 +10,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   logIn(@Body() logInData: UserLogInDto) {
-    return this.authService.logIn(logInData.email, logInData.password);
+    return this.authService.logIn(logInData);
   }
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   signUp(@Body() signUpData: CreateUserDto) {
     return this.authService.signUp(signUpData);

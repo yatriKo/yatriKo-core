@@ -11,6 +11,8 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { instanceToPlain } from 'class-transformer';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UserLogInDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,12 +21,15 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async logIn(email: string, pass: string): Promise<LoginResponseDto> {
-    const user = await this.usersService.findOne(email);
+  async logIn(LogInDto: UserLogInDto): Promise<LoginResponseDto> {
+    const user = await this.usersService.findOne(LogInDto.email);
     if (!user) {
       throw new UnauthorizedException();
     }
-    const isMatch: boolean = await bcrypt.compare(pass, user.password);
+    const isMatch: boolean = await bcrypt.compare(
+      LogInDto.password,
+      user.password,
+    );
     if (!isMatch) {
       throw new UnauthorizedException();
     }
@@ -36,24 +41,31 @@ export class AuthService {
       const accessToken = 'Bearer ' + token;
       return { accessToken, expiresIn: jwtConstants.expiresIn };
     } catch (error) {
-      throw new Error('JWT ERROR: ', error);
+      throw new Error('JWT ERROR: ' + error);
     }
   }
 
   async signUp(userDetails: CreateUserDto) {
-    const usercheck = await this.usersService.findOne(userDetails.email);
-    if (usercheck)
-      throw new BadRequestException(
-        'User with this email address already exists',
+    try {
+      const hashedPassword = await bcrypt.hash(
+        userDetails.password,
+        Number(process.env.BCRYPT_SALT),
       );
-    const hashedPassword = await bcrypt.hash(
-      userDetails.password,
-      Number(process.env.BCRYPT_SALT),
-    );
-    const user = await this.usersService.createUser({
-      ...userDetails,
-      password: hashedPassword,
-    });
-    return instanceToPlain(new UserResponseDto(user));
+      const user = await this.usersService.createUser({
+        ...userDetails,
+        password: hashedPassword,
+      });
+      return instanceToPlain(new UserResponseDto(user));
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException(
+          'User with this email address already exists',
+        );
+      }
+      throw error;
+    }
   }
 }
