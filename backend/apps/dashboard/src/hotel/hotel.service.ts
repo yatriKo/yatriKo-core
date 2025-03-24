@@ -9,12 +9,13 @@ export class HotelService {
   constructor(private readonly prismaService: PrismaService) {}
 
   // async createHotelOwner() {
-  //   await this.prismaService.hotelOwner.create({
+  //   await this.prismaService.dashboardUser.create({
   //     data: {
   //       id: 1,
   //       email: 'hotelAdmin@gmail.com',
   //       name: 'hotelAdmin',
   //       password: 'password',
+  //       role: 'HotelOwner',
   //     },
   //   });
 
@@ -26,7 +27,7 @@ export class HotelService {
 
     const hotel = await this.prismaService.hotel.create({
       data: {
-        ownerId: 1,
+        dashboardUserId: 1,
         location,
         phoneNumber,
         rooms: {
@@ -53,12 +54,19 @@ export class HotelService {
       where: {
         id,
         location,
-        rooms: { some: { price: { lte: Number(price) }, roomType } },
+        rooms: {
+          some: {
+            ...(price !== undefined ? { price: { lte: Number(price) } } : {}),
+            ...(roomType ? { roomType } : {}),
+          },
+        },
       },
       include: {
         rooms: true,
       },
     });
+
+    return hotels;
   }
 
   async findOne(id: number) {
@@ -84,7 +92,7 @@ export class HotelService {
     const hotel = await this.prismaService.hotel.update({
       where: { id },
       data: {
-        ownerId: 1,
+        dashboardUserId: 1,
         location,
         phoneNumber,
         rooms: {

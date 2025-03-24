@@ -13,55 +13,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model HotelOwner {
+enum Role {
+  Admin
+  HotelOwner
+  BusOwner
+}
+
+model dashboardUser {
   id       Int    @id @default(autoincrement())
   name     String
   email    String @unique
   password String
+  role     Role   @default(HotelOwner)
 
+  buses  Bus[]
   hotels Hotel[]
 }
 
 model Hotel {
-  id          Int    @id @default(autoincrement())
-  ownerId     Int
-  location    String
-  phoneNumber Int
+  id              Int      @id @default(autoincrement())
+  dashboardUserId Int
+  location        String
+  phoneNumber     Int
+  image           String[]
 
-  owner HotelOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  rooms Room[]
+  rooms         Room[]
+  dashboardUser dashboardUser? @relation(fields: [dashboardUserId], references: [id])
 }
 
 model Room {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   hotelId  Int
-  roomType String @default("Standard")
-  price    Int    @default(0)
+  roomType String   @default("Standard")
+  image    String[]
+  price    Int      @default(0)
 
   hotel    Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   bookings BookingHotel[]
 }
 
-model BusOwner {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-
-  buses Bus[]
-}
-
 model Bus {
-  id          Int      @id @default(autoincrement())
-  ownerId     Int
-  from        String
-  to          String
-  date        DateTime
-  phoneNumber Int      @unique
+  id              Int      @id @default(autoincrement())
+  dashboardUserId Int
+  from            String
+  image           String[]
+  to              String
+  date            DateTime
+  phoneNumber     Int      @unique
 
-  owner    BusOwner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  bookings BookingBus[]
-  busSeats BusSeat[]
+  dashboardUser dashboardUser @relation(fields: [dashboardUserId], references: [id], onDelete: Cascade)
+  busSeats      BusSeat[]
 }
 
 model BusSeat {
@@ -70,7 +71,8 @@ model BusSeat {
   seatType String
   price    Int
 
-  bus Bus @relation(fields: [busId], references: [id], onDelete: Cascade)
+  bookings BookingBus[]
+  bus      Bus          @relation(fields: [busId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -105,15 +107,15 @@ model BookingBus {
   id              Int      @id @default(autoincrement())
   userId          Int?
   travelerAgentId Int?
-  busId           Int
+  busSeatId       Int
   date            DateTime
   paymentStatus   Boolean
 
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bus           Bus          @relation(fields: [busId], references: [id], onDelete: Cascade)
+  BusSeat       BusSeat      @relation(fields: [busSeatId], references: [id], onDelete: Cascade)
   travelerAgent TravelAgent? @relation(fields: [travelerAgentId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, busId, date])
+  @@unique([userId, busSeatId, date])
 }
 
 model BookingHotel {

@@ -5,5 +5,10 @@ export class CreateHotelDto {
   phoneNumber: number;
   @IsArray()
   @ArrayNotEmpty({ message: 'Room types should not be empty' })
-  roomType: { type: string; price: number; numberOfRoom: number }[];
+  roomType: {
+    type: string;
+    price: number;
+    numberOfRoom: number;
+    image: string[];
+  }[];
 }
