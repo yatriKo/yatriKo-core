@@ -5,7 +5,7 @@ import { HotelService } from './hotel.service';
 export class HotelController {
   constructor(private hotelService: HotelService) {}
 
-  @Get('')
+  @Get()
   findAll(
     @Query('search') search?: string,
     @Query('limit') limit?: number,
