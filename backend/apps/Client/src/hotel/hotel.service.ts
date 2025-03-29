@@ -1,17 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'apps/prisma/prisma.service';
 import { FindAllDto } from './dto/find-all.dto';
-import { Prisma } from '@prisma/client';
-
-type HotelPayload = Prisma.HotelGetPayload<{
-  select: {
-    id: true;
-    location: true;
-    phoneNumber: true;
-    image: true;
-    rooms: true;
-  };
-}>;
 
 @Injectable()
 export class HotelService {
@@ -20,7 +9,7 @@ export class HotelService {
     search: string | undefined,
     limit: number | undefined = 10,
     offset: number | undefined = 0,
-  ): Promise<FindAllDto<HotelPayload>> {
+  ) {
     try {
       const [hotels, total] = await Promise.all([
         this.prisma.hotel.findMany({
@@ -29,7 +18,6 @@ export class HotelService {
             location: true,
             phoneNumber: true,
             image: true,
-            rooms: true,
           },
           where: { location: { contains: search || '', mode: 'insensitive' } },
           take: limit,
@@ -37,7 +25,7 @@ export class HotelService {
         }),
         this.prisma.hotel.count(),
       ]);
-      return { data: hotels, meta: { limit, offset, total } };
+      return new FindAllDto(hotels, limit, offset, total);
     } catch (error) {
       throw new Error('Error occurred' + error);
     }
