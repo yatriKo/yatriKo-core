@@ -8,17 +8,18 @@ import { JwtService } from '@nestjs/jwt';
 import { LogInDto } from './dto/dashboard-login.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import * as bcrypt from 'bcrypt';
-import { bcryptConstants, jwtConstants } from './constants';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UserResponseDto } from './dto/create-user-response.dto';
 import { instanceToPlain } from 'class-transformer';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async login(logInObject: LogInDto): Promise<LoginResponseDto> {
@@ -41,7 +42,7 @@ export class AuthService {
       const accessToken = 'Bearer ' + token;
       return {
         accessToken,
-        expiresIn: jwtConstants.expiresIn,
+        expiresIn: '7d',
         role: user.role,
       };
     } catch (error) {
@@ -53,7 +54,7 @@ export class AuthService {
     try {
       const hashedPassword = await bcrypt.hash(
         signUpObject.password,
-        bcryptConstants.salt,
+        this.configService.get<number>('bcryptSalt', 10),
       );
       const user = await this.usersService.createUser({
         ...signUpObject,
