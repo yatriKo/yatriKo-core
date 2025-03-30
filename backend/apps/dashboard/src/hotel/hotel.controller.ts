@@ -31,6 +31,7 @@ export class HotelController {
   async create(@Body() createHotelDto: CreateHotelDto) {
     return this.hotelService.create(createHotelDto);
   }
+  2;
 
   @Post('/hotel-image')
   @UseInterceptors(FileInterceptor('image'))

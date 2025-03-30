@@ -11,7 +11,6 @@ import {
 import { BookingHotelService } from './booking-hotel.service';
 import { CreateBookingHotelDto } from './dto/create-booking-hotel.dto';
 import { UpdateBookingHotelDto } from './dto/update-booking-hotel.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('booking-hotel')
 export class BookingHotelController {
