@@ -32,9 +32,10 @@ model dashboardUser {
 
 model Hotel {
   id              Int      @id @default(autoincrement())
+  name            String
   dashboardUserId Int
   location        String
-  phoneNumber     Int
+  phoneNumber     String
   image           String[]
 
   rooms         Room[]
@@ -59,7 +60,8 @@ model Bus {
   image           String[]
   to              String
   date            DateTime
-  phoneNumber     Int      @unique
+  busNumber       String
+  phoneNumber     String   @unique
 
   dashboardUser dashboardUser @relation(fields: [dashboardUserId], references: [id], onDelete: Cascade)
   busSeats      BusSeat[]
