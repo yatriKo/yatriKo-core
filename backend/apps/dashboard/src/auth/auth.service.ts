@@ -5,31 +5,32 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { LogInDto } from './dto/dashboard-login.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { UserResponseDto } from './dto/user-response.dto';
+import { UserResponseDto } from './dto/create-user-response.dto';
 import { instanceToPlain } from 'class-transformer';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { UserLogInDto } from './dto/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  async logIn(LogInDto: UserLogInDto): Promise<LoginResponseDto> {
-    const user = await this.usersService.findOne(LogInDto.email);
+  async login(logInObject: LogInDto): Promise<LoginResponseDto> {
+    const user = await this.usersService.findOne(logInObject.email);
+
     if (!user) {
       throw new UnauthorizedException();
     }
-    const isMatch: boolean = await bcrypt.compare(
-      LogInDto.password,
-      user.password,
-    );
+
+    const isMatch = await bcrypt.compare(logInObject.password, user.password);
+
     if (!isMatch) {
       throw new UnauthorizedException();
     }
@@ -39,20 +40,24 @@ export class AuthService {
     try {
       const token = await this.jwtService.signAsync(payload);
       const accessToken = 'Bearer ' + token;
-      return { accessToken, expiresIn: jwtConstants.expiresIn };
+      return {
+        accessToken,
+        expiresIn: '7d',
+        role: user.role,
+      };
     } catch (error) {
       throw new Error('JWT ERROR: ' + error);
     }
   }
 
-  async signUp(userDetails: CreateUserDto) {
+  async signUp(signUpObject: CreateUserDto) {
     try {
       const hashedPassword = await bcrypt.hash(
-        userDetails.password,
-        Number(process.env.BCRYPT_SALT),
+        signUpObject.password,
+        this.configService.get<number>('bcryptSalt', 10),
       );
       const user = await this.usersService.createUser({
-        ...userDetails,
+        ...signUpObject,
         password: hashedPassword,
       });
       return instanceToPlain(new UserResponseDto(user));
