@@ -7,22 +7,46 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
 import { FindHotelDto } from './dto/find-all-hotel.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from '../cloudinary.service';
 
 @Controller('hotel')
 export class HotelController {
-  constructor(private readonly hotelService: HotelService) {}
+  constructor(
+    private readonly hotelService: HotelService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
   // create() {
   //   return this.hotelService.createHotelOwner();
   // }
-  create(@Body() createHotelDto: CreateHotelDto) {
+  async create(@Body() createHotelDto: CreateHotelDto) {
     return this.hotelService.create(createHotelDto);
+  }
+  2;
+
+  @Post('/hotel-image')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadHotelImage(@UploadedFile() file: Express.Multer.File) {
+    const uploadedImage = await this.cloudinaryService.uploadImage(file.buffer);
+
+    return { url: uploadedImage.secure_url };
+  }
+
+  @Post('/room-image')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    const uploadedImage = await this.cloudinaryService.uploadImage(file.buffer);
+
+    return { url: uploadedImage.secure_url };
   }
 
   @Get()
