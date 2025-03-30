@@ -19,7 +19,7 @@ import config from '../../config/config';
     MulterModule,
     UsersModule,
     AuthModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
   ],
   controllers: [DashboardController],
   providers: [DashboardService, CloudinaryService],
