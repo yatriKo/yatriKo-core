@@ -9,6 +9,7 @@ import { CloudinaryService } from './cloudinary.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { BusModule } from './bus/bus.module';
 import config from '../../config/config';
 
 @Module({
@@ -20,6 +21,7 @@ import config from '../../config/config';
     UsersModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
+    BusModule,
   ],
   controllers: [DashboardController],
   providers: [DashboardService, CloudinaryService],
