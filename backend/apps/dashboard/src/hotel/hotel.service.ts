@@ -23,18 +23,20 @@ export class HotelService {
   // }
 
   async create(createHotelDto: CreateHotelDto) {
-    const { location, phoneNumber, roomType } = createHotelDto;
+    const { location, hotelImage, phoneNumber, roomType } = createHotelDto;
 
     const hotel = await this.prismaService.hotel.create({
       data: {
         dashboardUserId: 1,
         location,
         phoneNumber,
+        image: hotelImage,
         rooms: {
           create: roomType.flatMap((room) =>
             Array.from({ length: room.numberOfRoom }, () => ({
               roomType: room.type,
               price: room.price,
+              roomImage: room.roomImage,
             })),
           ),
         },
@@ -64,6 +66,9 @@ export class HotelService {
       include: {
         rooms: true,
       },
+      omit: {
+        image: true,
+      },
     });
 
     return hotels;
@@ -87,7 +92,7 @@ export class HotelService {
   }
 
   async update(id: number, updateHotelDto: UpdateHotelDto) {
-    const { location, phoneNumber, roomType } = updateHotelDto;
+    const { location, phoneNumber, roomType, hotelImage } = updateHotelDto;
 
     const hotel = await this.prismaService.hotel.update({
       where: { id },
@@ -95,11 +100,13 @@ export class HotelService {
         dashboardUserId: 1,
         location,
         phoneNumber,
+        image: hotelImage,
         rooms: {
           create: roomType.flatMap((room) =>
             Array.from({ length: room.numberOfRoom }, () => ({
               roomType: room.type,
               price: room.price,
+              image: room.roomImage,
             })),
           ),
         },
