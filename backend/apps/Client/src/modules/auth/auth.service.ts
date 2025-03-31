@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -39,7 +38,7 @@ export class AuthService {
     try {
       const token = await this.jwtService.signAsync(payload);
       const accessToken = 'Bearer ' + token;
-      return { accessToken, expiresIn: jwtConstants.expiresIn };
+      return { accessToken, expiresIn: '7d' };
     } catch (error) {
       throw new Error('JWT ERROR: ' + error);
     }

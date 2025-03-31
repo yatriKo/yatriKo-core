@@ -15,11 +15,17 @@ export class HotelService {
         this.prisma.hotel.findMany({
           select: {
             id: true,
+            name: true,
             location: true,
             phoneNumber: true,
             image: true,
           },
-          where: { location: { contains: search || '', mode: 'insensitive' } },
+          where: {
+            OR: [
+              { location: { contains: search || '', mode: 'insensitive' } },
+              { name: { contains: search || '', mode: 'insensitive' } },
+            ],
+          },
           take: limit,
           skip: offset,
         }),
