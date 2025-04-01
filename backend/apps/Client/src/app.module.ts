@@ -5,11 +5,13 @@ import { PrismaModule } from 'apps/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import config from 'apps/config/config';
+import { HotelModule } from './modules/hotel/hotel.module';
 
 @Module({
   imports: [
     PrismaModule,
     AuthModule,
+    HotelModule,
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
   ],
   controllers: [AppController],

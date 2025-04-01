@@ -39,7 +39,7 @@ export class AuthService {
     try {
       const token = await this.jwtService.signAsync(payload);
       const accessToken = 'Bearer ' + token;
-      return { accessToken, expiresIn: jwtConstants.expiresIn };
+      return { accessToken, expiresIn: '7d' };
     } catch (error) {
       throw new Error('JWT ERROR: ' + error);
     }
