@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -13,6 +12,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { instanceToPlain } from 'class-transformer';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { UserLogInDto } from './dto/login.dto';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
