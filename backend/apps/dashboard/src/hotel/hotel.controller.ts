@@ -9,6 +9,8 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import { CreateHotelDto } from './dto/create-hotel.dto';
@@ -16,8 +18,12 @@ import { UpdateHotelDto } from './dto/update-hotel.dto';
 import { FindHotelDto } from './dto/find-all-hotel.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary.service';
+import { AuthGuard } from '../auth/auth.guard';
+import { Roles } from '../roles/roles.decorator';
 
 @Controller('hotel')
+@UseGuards(AuthGuard)
+@Roles('HotelOwner')
 export class HotelController {
   constructor(
     private readonly hotelService: HotelService,
@@ -28,10 +34,10 @@ export class HotelController {
   // create() {
   //   return this.hotelService.createHotelOwner();
   // }
-  async create(@Body() createHotelDto: CreateHotelDto) {
-    return this.hotelService.create(createHotelDto);
+  //
+  async create(@Body() CreateHotelDto: CreateHotelDto, @Request() req) {
+    return this.hotelService.create(CreateHotelDto, req.user.sub);
   }
-  2;
 
   @Post('/hotel-image')
   @UseInterceptors(FileInterceptor('image'))
@@ -50,8 +56,8 @@ export class HotelController {
   }
 
   @Get()
-  findAll(@Query() findAllHotelDto: FindHotelDto) {
-    return this.hotelService.findAll(findAllHotelDto);
+  findAll(@Query() findAllHotelDto: FindHotelDto, @Request() req) {
+    return this.hotelService.findAll(findAllHotelDto, req.user.sub);
   }
 
   @Get(':id')
