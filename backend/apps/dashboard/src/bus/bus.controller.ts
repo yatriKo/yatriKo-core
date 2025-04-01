@@ -20,9 +20,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary.service';
 import { FindBusDto } from './dto/find-all-bus.dto';
 import { Roles } from '../roles/roles.decorator';
+import { RolesGuard } from '../roles/roles.guard';
 
 @Controller('bus')
-@UseGuards(AuthGuard)
+@UseGuards(RolesGuard)
 @Roles('BusOwner')
 export class BusController {
   constructor(
