@@ -8,26 +8,14 @@ import { PrismaService } from 'apps/prisma/prisma.service';
 export class HotelService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  // async createHotelOwner() {
-  //   await this.prismaService.dashboardUser.create({
-  //     data: {
-  //       id: 1,
-  //       email: 'hotelAdmin@gmail.com',
-  //       name: 'hotelAdmin',
-  //       password: 'password',
-  //       role: 'HotelOwner',
-  //     },
-  //   });
-
-  //   return 'done';
-  // }
-
-  async create(createHotelDto: CreateHotelDto) {
-    const { location, hotelImage, phoneNumber, roomType } = createHotelDto;
+  async create(createHotelDto: CreateHotelDto, id: number) {
+    const { location, name, hotelImage, phoneNumber, roomType } =
+      createHotelDto;
 
     const hotel = await this.prismaService.hotel.create({
       data: {
-        dashboardUserId: 1,
+        name,
+        dashboardUserId: id,
         location,
         phoneNumber,
         image: hotelImage,
@@ -49,12 +37,13 @@ export class HotelService {
     return hotel;
   }
 
-  async findAll(findAllHotelDto: FindHotelDto) {
-    const { id, location, price, roomType } = findAllHotelDto;
+  async findAll(findAllHotelDto: FindHotelDto, id: number) {
+    const { name, location, price, roomType } = findAllHotelDto;
 
     const hotels = this.prismaService.hotel.findMany({
       where: {
-        id,
+        dashboardUserId: id,
+        name,
         location,
         rooms: {
           some: {
@@ -92,12 +81,14 @@ export class HotelService {
   }
 
   async update(id: number, updateHotelDto: UpdateHotelDto) {
-    const { location, phoneNumber, roomType, hotelImage } = updateHotelDto;
+    const { location, phoneNumber, name, roomType, hotelImage } =
+      updateHotelDto;
 
     const hotel = await this.prismaService.hotel.update({
       where: { id },
       data: {
         dashboardUserId: 1,
+        name,
         location,
         phoneNumber,
         image: hotelImage,
