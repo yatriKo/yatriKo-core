@@ -33,7 +33,6 @@ export class RolesGuard implements CanActivate {
       .switchToHttp()
       .getRequest();
     const userData = await this.usersService.findOne(user.username);
-    console.log(userData);
     if (!userData) return false;
     return requiredRoles.includes(userData.role);
   }
