@@ -12,6 +12,7 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { instanceToPlain } from 'class-transformer';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { UserLogInDto } from './dto/login.dto';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {

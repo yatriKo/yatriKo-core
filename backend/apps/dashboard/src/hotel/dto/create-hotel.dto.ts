@@ -1,8 +1,13 @@
-import { IsArray, ArrayNotEmpty } from 'class-validator';
+import { IsArray, ArrayNotEmpty, IsNotEmpty } from 'class-validator';
 
 export class CreateHotelDto {
+  @IsNotEmpty()
   location: string;
-  phoneNumber: number;
+  @IsNotEmpty()
+  name: string;
+  @IsNotEmpty()
+  phoneNumber: string;
+  @IsNotEmpty()
   hotelImage: string[];
   @IsArray()
   @ArrayNotEmpty({ message: 'Room types should not be empty' })
