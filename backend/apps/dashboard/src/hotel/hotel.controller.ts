@@ -19,9 +19,11 @@ import { FindHotelDto } from './dto/find-all-hotel.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { Roles } from '../roles/roles.decorator';
 
 @Controller('hotel')
 @UseGuards(AuthGuard)
+@Roles('HotelOwner')
 export class HotelController {
   constructor(
     private readonly hotelService: HotelService,

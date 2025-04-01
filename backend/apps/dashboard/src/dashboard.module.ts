@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { BusModule } from './bus/bus.module';
 import config from '../../config/config';
+import { AuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -24,6 +26,13 @@ import config from '../../config/config';
     BusModule,
   ],
   controllers: [DashboardController],
-  providers: [DashboardService, CloudinaryService],
+  providers: [
+    DashboardService,
+    CloudinaryService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class DashboardModule {}
