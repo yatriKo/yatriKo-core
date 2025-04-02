@@ -1,103 +1,173 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useState, useEffect } from "react";
+import { Search, LogIn, X, Menu } from "lucide-react";
+
+export default function YatriLandingPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [screenSize, setScreenSize] = useState({
+    width: 0,
+    isMobile: false,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setScreenSize({
+        width: width,
+        isMobile: width <= 768,
+      });
+
+      // Close mobile menu if screen becomes larger
+      if (width > 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const menuItems = [
+    { label: "Home Page", href: "#" },
+    { label: "About Us", href: "/about" },
+    { label: "Services", href: "/services" },
+  ];
+
+  // Determine icon sizes based on screen width
+  const getIconSize = () => {
+    if (screenSize.width <= 375) return 20; // Extra small screens
+    if (screenSize.width <= 480) return 24; // Small screens
+    return 32; // Default/larger screens
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Started{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div
+      className="relative bg-cover bg-center bg-no-repeat h-screen flex flex-col"
+      style={{
+        backgroundImage: "url('/images/mountain.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <nav className="navbar fixed top-0 left-0 w-full bg-black/30 shadow-md z-50 px-2 sm:px-4 py-2 sm:py-3 flex justify-between items-center">
+        <div className="logo text-[#FEFAE0] text-xl sm:text-2xl font-bold">
+          <span className="font-newsreader italic text-base sm:text-2xl">
+            Yatri
+          </span>{" "}
+          <span className="font-newsreader text-base sm:text-2xl">को</span>
+        </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+        {/* Burger Menu Icon */}
+        <div
+          className="burger text-[#FEFAE0] cursor-pointer md:hidden"
+          onClick={toggleMobileMenu}
+        >
+          {isMobileMenuOpen ? (
+            <X size={getIconSize()} />
+          ) : (
+            <Menu size={getIconSize()} />
+          )}
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && screenSize.isMobile && (
+          <div className="mobile-menu absolute top-full left-0 w-full bg-black/30 py-2 sm:py-4">
+            <ul className="flex flex-col items-center">
+              {menuItems.map((item, index) => (
+                <li key={index} className="w-full text-center my-1 sm:my-2">
+                  <a
+                    href={item.href}
+                    className="text-[#FEFAE0] text-base sm:text-lg block py-1 sm:py-2 hover:bg-white/10"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li className="w-full text-center mt-2 sm:mt-4">
+                <a
+                  href="/login"
+                  className="inline-flex items-center justify-center text-black font-bold bg-[#FEFAE0]/30 border-2 border-[#FEFAE0] px-3 sm:px-5 py-1 sm:py-2 rounded-lg text-sm sm:text-base hover:bg-[#FEFAE0]/60 transition-all hover:scale-105 shadow-md"
+                >
+                  <LogIn className="mr-1 sm:mr-2" size={16} /> Login
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
+
+        {/* Desktop Navigation */}
+        <ul className="hidden md:flex nav-links items-center justify-center flex-grow">
+          {menuItems.map((item, index) => (
+            <li key={index} className="mx-2 sm:mx-4">
+              <a
+                href={item.href}
+                className="text-[#FEFAE0] text-base sm:text-lg relative nav-link-hover"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Desktop Login Button */}
+        <div className="hidden md:flex items-center">
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/login"
+            className="login-btn inline-flex items-center text-black font-bold bg-[#FEFAE0]/30 border-2 border-[#FEFAE0] px-3 sm:px-5 py-1 sm:py-2 rounded-lg text-sm sm:text-base hover:bg-[#FEFAE0]/60 transition-all hover:scale-105 shadow-md"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+            <LogIn className="mr-1 sm:mr-2" size={16} /> Login
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </nav>
+
+      <section className="hero relative z-10 flex-grow flex flex-col justify-center items-center text-center text-[#FEFAE0] px-2 sm:px-4 mt-12 sm:mt-16">
+        <h1 className="text-4xl sm:text-6xl mb-2 sm:mb-4">
+          <span className="font-newsreader italic font-extrabold text-[80px] sm:text-[118px]">
+            Yatri
+          </span>
+          <span className="font-newsreader font-bold text-[90px] sm:text-[128px]">
+            को
+          </span>
+        </h1>
+        <p className="text-base sm:text-lg mb-4 sm:mb-6 font-bold">
+          Roam. Discover. Repeat - Your Travel, One Platform
+        </p>
+
+        <div className="search-bar w-full max-w-xs sm:max-w-xl md:max-w-md px-2 sm:px-4 h-10 sm:h-14 bg-[#FEFAE0]/60 rounded-3xl border-2 border-[#FEFAE0] flex items-center">
+          <input
+            type="text"
+            placeholder="Search your destination"
+            className="flex-grow bg-transparent outline-none text-base sm:text-lg text-black placeholder-black/70"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <button className="search-btn bg-transparent text-black hover:scale-105 transition-transform">
+            <Search size={getIconSize() - 8} />
+          </button>
+        </div>
+      </section>
+
+      <style jsx>{`
+        .nav-link-hover::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -5px;
+          width: 0;
+          height: 3px;
+          background: #fefae0;
+          transition: width 0.3s ease;
+          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .nav-link-hover:hover::after {
+          width: 100%;
+        }
+      `}</style>
     </div>
   );
 }
