@@ -1,127 +1,114 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { 
-    FaGoogle, 
-    FaFacebookF 
-} from 'react-icons/fa';
+import React, { useState } from "react";
 
-const LoginPage = () => {
-    const [isActive, setIsActive] = useState(false);
+const YatriLoginPage = () => {
+  const [isActive, setIsActive] = useState(false);
 
-    return (
-        <div className="bg-gradient-to-r from-gray-200 to-[#c9d6ff] flex items-center justify-center min-h-screen font-montserrat">
-            <div className={`bg-white rounded-[30px] shadow-lg relative overflow-hidden w-[768px] max-w-full min-h-[480px] transition-all duration-600 
-                ${isActive ? 'active' : ''}`}>
-                {/* Sign Up Container */}
-                <div className={`form-container sign-up absolute top-0 h-full transition-all duration-600 left-0 w-1/2 
-                    ${isActive ? 'opacity-100 z-50 translate-x-full' : 'opacity-0 z-10'}`}>
-                    <form className="bg-white flex flex-col items-center justify-center h-full px-10 py-0">
-                        <h1 className="text-2xl font-bold mb-5">Create Account</h1>
-                        <div className="social-icons flex my-5">
-                            <a href="#" className="border border-gray-300 rounded-full flex items-center justify-center w-10 h-10 mx-1">
-                                <FaGoogle />
-                            </a>
-                            <a href="#" className="border border-gray-300 rounded-full flex items-center justify-center w-10 h-10 mx-1">
-                                <FaFacebookF />
-                            </a>
-                        </div>
-                        <span className="text-xs my-2.5">or use your email for registration</span>
-                        <input 
-                            type="text" 
-                            placeholder="Name" 
-                            className="bg-gray-100 w-full p-2.5 rounded-lg my-2 outline-none" 
-                        />
-                        <input 
-                            type="email" 
-                            placeholder="Email" 
-                            className="bg-gray-100 w-full p-2.5 rounded-lg my-2 outline-none" 
-                        />
-                        <input 
-                            type="password" 
-                            placeholder="Password" 
-                            className="bg-gray-100 w-full p-2.5 rounded-lg my-2 outline-none" 
-                        />
-                        <button 
-                            className="bg-[#2da0a8] text-white uppercase px-11 py-2.5 rounded-lg mt-2.5 cursor-pointer"
-                        >
-                            Sign Up
-                        </button>
-                    </form>
-                </div>
+  const handleRegisterClick = () => {
+    setIsActive(true);
+  };
 
-                {/* Sign In Container */}
-                <div className={`form-container sign-in absolute top-0 h-full left-0 w-1/2 z-20 
-                    ${isActive ? '-translate-x-full' : ''}`}>
-                    <form className="bg-white flex flex-col items-center justify-center h-full px-10 py-0">
-                        <h1 className="text-2xl font-bold mb-5">Sign In</h1>
-                        <div className="social-icons flex my-5">
-                            <a href="#" className="border border-gray-300 rounded-full flex items-center justify-center w-10 h-10 mx-1">
-                                <FaGoogle />
-                            </a>
-                            <a href="#" className="border border-gray-300 rounded-full flex items-center justify-center w-10 h-10 mx-1">
-                                <FaFacebookF />
-                            </a>
-                        </div>
-                        <span className="text-xs my-2.5">or use your email password</span>
-                        <input 
-                            type="email" 
-                            placeholder="Email" 
-                            className="bg-gray-100 w-full p-2.5 rounded-lg my-2 outline-none" 
-                        />
-                        <input 
-                            type="password" 
-                            placeholder="Password" 
-                            className="bg-gray-100 w-full p-2.5 rounded-lg my-2 outline-none" 
-                        />
-                        <a href="#" className="text-xs my-2.5">Forget Your Password?</a>
-                        <button 
-                            className="bg-[#2da0a8] text-white uppercase px-11 py-2.5 rounded-lg mt-2.5 cursor-pointer"
-                        >
-                            Sign In
-                        </button>
-                    </form>
-                </div>
+  const handleLoginClick = () => {
+    setIsActive(false);
+  };
 
-                {/* Toggle Container */}
-                <div className={`toggle-container absolute top-0 left-1/2 w-1/2 h-full overflow-hidden transition-all duration-600 
-                    ${isActive ? '-translate-x-full rounded-r-[150px]' : 'rounded-l-[150px]'} z-[1000]`}>
-                    <div className={`toggle bg-gradient-to-r from-[#96a82d] to-[#96a82d] absolute left-[-100%] h-full w-[200%] transition-all duration-600 
-                        ${isActive ? 'translate-x-1/2' : ''}`}>
-                        {/* Left Toggle Panel */}
-                        <div className={`toggle-panel toggle-left absolute w-1/2 h-full flex flex-col items-center justify-center text-center px-8 py-0 
-                            ${isActive ? 'translate-x-0' : '-translate-x-[200%]'} transition-all duration-600`}>
-                            <h1 className="text-2xl font-bold text-white">Yatri को</h1>
-                            <p className="text-sm text-white my-5">
-                                Enter your personal details to use all of site features
-                            </p>
-                            <button 
-                                onClick={() => setIsActive(false)}
-                                className="bg-transparent border border-white text-white uppercase px-11 py-2.5 rounded-lg mt-2.5 cursor-pointer"
-                            >
-                                Sign In
-                            </button>
-                        </div>
+  const handleSignupSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("Sign Up button clicked");
+  };
 
-                        {/* Right Toggle Panel */}
-                        <div className={`toggle-panel toggle-right absolute right-0 w-1/2 h-full flex flex-col items-center justify-center text-center px-8 py-0 
-                            ${isActive ? 'translate-x-[200%]' : 'translate-x-0'} transition-all duration-600`}>
-                            <h1 className="text-2xl font-bold text-white">Yatri को</h1>
-                            <p className="text-sm text-white my-5">
-                                Register with your personal details to use all of site features
-                            </p>
-                            <button 
-                                onClick={() => setIsActive(true)}
-                                className="bg-transparent border border-white text-white uppercase px-11 py-2.5 rounded-lg mt-2.5 cursor-pointer"
-                            >
-                                Sign Up
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  const handleLoginSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("Login button clicked");
+  };
+
+  return (
+    <div className="flex items-center justify-center flex-col h-screen bg-gradient-to-r from-[#e2e2e2] to-[#c9d6ff]">
+      <div className={`bg-white rounded-3xl shadow-lg relative overflow-hidden w-full max-w-3xl min-h-[480px] ${isActive ? 'active' : ''}`}>
+        
+        {/* Sign Up Form */}
+        <div className={`absolute top-0 h-full transition-all duration-600 ease-in-out ${isActive ? 'translate-x-full opacity-100 z-10' : 'opacity-0 z-1'} left-0 w-1/2`}>
+          <div className="bg-white flex items-center justify-center flex-col px-10 h-full">
+            <h1 className="text-[#264653] text-xl font-bold mb-4">Create Account</h1>
+            <input type="text" placeholder="Name" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            <input type="email" placeholder="Email" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            <input type="text" placeholder="Age" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            <input type="password" placeholder="Password" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            
+            <button 
+              onClick={handleSignupSubmit} 
+              className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
+            >
+              Sign Up
+            </button>
+
+            <div className="flex flex-col items-start mt-2">
+              <label className="flex items-center text-sm gap-2 mb-1 text-black">
+                <input type="checkbox" name="role" value="traveler" className="w-4 h-4" /> Traveler
+              </label>
+              <label className="flex items-center text-sm gap-2 text-black">
+                <input type="checkbox" name="role" value="guesthouse-owner" className="w-4 h-4" /> Guesthouse owner
+              </label>
             </div>
+          </div>
         </div>
-    );
+
+        {/* Sign In Form */}
+        <div className={`absolute top-0 h-full transition-all duration-600 ease-in-out ${isActive ? 'translate-x-full' : ''} left-0 w-1/2 z-2`}>
+          <div className="bg-white flex items-center justify-center flex-col px-10 h-full">
+            <h1 className="text-[#264653] text-xl font-bold mb-4">ENTER TO LOG IN</h1>
+            <input type="text" placeholder="Name" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            <input type="email" placeholder="Email" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            <input type="password" placeholder="Password" className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"/>
+            
+            <button 
+              onClick={handleLoginSubmit} 
+              className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+
+        {/* Toggle Container */}
+        <div className={`absolute top-0 ${isActive ? 'translate-x-[-100%] rounded-r-[150px] rounded-l-none' : 'rounded-l-[150px] rounded-r-none'} left-1/2 w-1/2 h-full overflow-hidden transition-all duration-600 ease-in-out z-50`}>
+          <div className={`bg-[#264653] h-full relative ${isActive ? 'translate-x-1/2' : 'translate-x-0'} left-[-100%] w-[200%] transition-all duration-600 ease-in-out`}>
+
+            {/* Toggle Left Panel */}
+            <div className={`absolute w-1/2 h-full flex items-center justify-center flex-col px-8 text-center top-0 ${isActive ? 'translate-x-0' : 'translate-x-[-200%]'} transition-all duration-600 ease-in-out`}>
+              <h1 className="text-[#FEFAE0] text-2xl font-semibold font-serif italic mb-4">Yatri को</h1>
+              <p className="text-white text-sm leading-5 tracking-wide my-5">
+                Enter your personal details to use all of site features
+              </p>
+              <button 
+                onClick={handleLoginClick} 
+                className="bg-transparent text-white text-xs py-2 px-10 border border-white rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
+              >
+                LOGIN
+              </button>
+            </div>
+
+            {/* Toggle Right Panel */}
+            <div className={`absolute w-1/2 h-full flex items-center justify-center flex-col px-8 text-center top-0 right-0 ${isActive ? 'translate-x-[200%]' : 'translate-x-0'} transition-all duration-600 ease-in-out`}>
+              <h1 className="text-[#FEFAE0] text-2xl font-semibold font-serif italic mb-4">Yatri को</h1>
+              <p className="text-white text-sm leading-5 tracking-wide my-5">
+                Register with your personal details to use all of site features
+              </p>
+              <button 
+                onClick={handleRegisterClick} 
+                className="bg-transparent text-white text-xs py-2 px-10 border border-white rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
+              >
+                SIGN UP
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
-export default LoginPage;
+export default YatriLoginPage;
