@@ -4,6 +4,7 @@ import { FindAllDto } from './dto/find-all.dto';
 
 @Injectable()
 export class HotelService {
+  xw;
   constructor(private readonly prisma: PrismaService) {}
   async findAll(
     search: string | undefined,
@@ -35,5 +36,13 @@ export class HotelService {
     } catch (error) {
       throw new Error('Error occurred' + error);
     }
+  }
+
+  async findOne(id: number) {
+    const hotel = await this.prisma.hotel.findUnique({
+      where: { id },
+      omit: { dashboardUserId: true },
+    });
+    return hotel;
   }
 }

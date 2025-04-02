@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 
 @Controller('hotel')
@@ -12,5 +12,10 @@ export class HotelController {
     @Query('offset') offset?: number,
   ) {
     return this.hotelService.findAll(search, limit, offset);
+  }
+
+  @Get(':id')
+  findOne(@Param() id: number) {
+    return this.hotelService.findOne(id);
   }
 }
