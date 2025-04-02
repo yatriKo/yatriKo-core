@@ -15,7 +15,7 @@ export class HotelController {
   }
 
   @Get(':id')
-  findOne(@Param() id: number) {
+  findOne(@Param('id') id: number) {
     return this.hotelService.findOne(id);
   }
 }

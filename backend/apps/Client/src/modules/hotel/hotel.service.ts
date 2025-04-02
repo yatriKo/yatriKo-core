@@ -23,8 +23,8 @@ export class HotelService {
           },
           where: {
             OR: [
-              { location: { contains: search || '', mode: 'insensitive' } },
-              { name: { contains: search || '', mode: 'insensitive' } },
+              { location: { contains: search || '' } },
+              { name: { contains: search || '' } },
             ],
           },
           take: limit,
@@ -40,7 +40,9 @@ export class HotelService {
 
   async findOne(id: number) {
     const hotel = await this.prisma.hotel.findUnique({
-      where: { id },
+      where: {
+        id,
+      },
       omit: { dashboardUserId: true },
     });
     return hotel;
