@@ -22,8 +22,6 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../roles/roles.decorator';
 
 @Controller('hotel')
-@UseGuards(AuthGuard)
-@Roles('HotelOwner')
 export class HotelController {
   constructor(
     private readonly hotelService: HotelService,
@@ -38,6 +36,7 @@ export class HotelController {
   async create(@Body() CreateHotelDto: CreateHotelDto, @Request() req) {
     return this.hotelService.create(CreateHotelDto, req.user.sub);
   }
+  2;
 
   @Post('/hotel-image')
   @UseInterceptors(FileInterceptor('image'))

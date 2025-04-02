@@ -23,8 +23,6 @@ import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
 
 @Controller('bus')
-@UseGuards(RolesGuard)
-@Roles('BusOwner')
 export class BusController {
   constructor(
     private readonly busService: BusService,
