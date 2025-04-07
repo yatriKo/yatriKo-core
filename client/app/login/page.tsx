@@ -1,13 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AxiosInstance from "../../utils/axiosInstance";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/auth-context";
+import { toast } from "sonner";
 
-const fetchLogin = async (email: string, password: string) => {
+const userLogin = async (email: string, password: string) => {
   const response = await AxiosInstance.post("/auth/login", { email, password });
   return response.data;
+};
+
+const userSignUp = async (
+  name: string,
+  email: string,
+  phoneNumber: string,
+  password: string
+) => {
+  const response = await AxiosInstance.post("/auth/sign-up", {
+    name,
+    email,
+    phoneNumber,
+    password,
+  });
+  return response;
 };
 
 const YatriLoginPage = () => {
@@ -19,6 +35,11 @@ const YatriLoginPage = () => {
   const [loginPass, setLoginPass] = useState("");
   const [loginError, setLoginError] = useState(false);
 
+  const [signUpName, setSignUpName] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPhone, setSignUpPhone] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+
   const handleRegisterClick = () => {
     setIsActive(true);
   };
@@ -27,24 +48,43 @@ const YatriLoginPage = () => {
     setIsActive(false);
   };
 
-  const handleSignupSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log("Sign Up button clicked");
-  };
-
-  const handleLoginSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSignupSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       setLoginError(false);
-      console.log("before", loginError);
-      const data = await fetchLogin(loginEmail, loginPass);
-      setToken(data.accessToken);
-      router.push("/");
-    } catch {
+      const data = await userSignUp(
+        signUpName,
+        signUpEmail,
+        signUpPhone,
+        signUpPassword
+      );
+      toast(`User ${data.data.name} created successfully!`);
+      setIsActive(false);
+    } catch (error) {
       setLoginError(true);
-      console.log(loginError);
+      toast(error?.response.data.message);
+      console.log(error);
     }
   };
+
+  const handleLoginSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    try {
+      setLoginError(false);
+      const data = await userLogin(loginEmail, loginPass);
+      setToken(data.accessToken);
+      router.push("/");
+    } catch (error) {
+      setLoginError(true);
+      console.log(error);
+    }
+  };
+
+  // useEffect(() => {
+  //   if (token) {
+  //     router.replace("/");
+  //   }
+  // }, [token, router]);
 
   return (
     <div className="flex items-center justify-center flex-col h-screen bg-gradient-to-r from-[#e2e2e2] to-[#c9d6ff]">
@@ -63,54 +103,36 @@ const YatriLoginPage = () => {
             <h1 className="text-[#264653] text-xl font-bold mb-4">
               Create Account
             </h1>
-            <input
-              type="text"
-              placeholder="Name"
-              className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-            />
-            <input
-              type="text"
-              placeholder="Age"
-              className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-            />
+            <form onSubmit={handleSignupSubmit}>
+              <input
+                type="text"
+                placeholder="Name"
+                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
+                onChange={(e) => setSignUpName(e.target.value)}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
+                onChange={(e) => setSignUpEmail(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Phone Number"
+                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
+                onChange={(e) => setSignUpPhone(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
+                onChange={(e) => setSignUpPassword(e.target.value)}
+              />
 
-            <button
-              onClick={handleSignupSubmit}
-              className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
-            >
-              Sign Up
-            </button>
-
-            <div className="flex flex-col items-start mt-2">
-              <label className="flex items-center text-sm gap-2 mb-1 text-black">
-                <input
-                  type="checkbox"
-                  name="role"
-                  value="traveler"
-                  className="w-4 h-4"
-                />{" "}
-                Traveler
-              </label>
-              <label className="flex items-center text-sm gap-2 text-black">
-                <input
-                  type="checkbox"
-                  name="role"
-                  value="guesthouse-owner"
-                  className="w-4 h-4"
-                />{" "}
-                Guesthouse owner
-              </label>
-            </div>
+              <button className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer">
+                Sign Up
+              </button>
+            </form>
           </div>
         </div>
 
@@ -129,26 +151,29 @@ const YatriLoginPage = () => {
             >
               Invalid Credentials
             </div>
-            <input
-              type="email"
-              placeholder="Email"
-              onChange={(e) => setLoginEmail(e.target.value)}
-              className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              onChange={(e) => setLoginPass(e.target.value)}
-              className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-            />
+            <form onSubmit={handleLoginSubmit}>
+              <input
+                required
+                type="email"
+                placeholder="Email"
+                onChange={(e) => setLoginEmail(e.target.value)}
+                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
+              />
+              <input
+                required
+                type="password"
+                placeholder="Password"
+                onChange={(e) => setLoginPass(e.target.value)}
+                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
+              />
 
-            <button
-              onClick={handleLoginSubmit}
-              disabled={!(loginEmail && loginPass)}
-              className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
-            >
-              Login
-            </button>
+              <button
+                // disabled={!(loginEmail && loginPass)}
+                className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer"
+              >
+                Login
+              </button>
+            </form>
           </div>
         </div>
 
