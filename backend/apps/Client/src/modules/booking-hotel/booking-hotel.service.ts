@@ -25,8 +25,10 @@ export class BookingHotelService {
     });
   }
 
-  findAll() {
-    return `This action returns all bookingHotel`;
+  async findAll(id: number) {
+    return await this.prismaService.bookingHotel.findMany({
+      where: { userId: id },
+    });
   }
 
   findOne(id: number) {

@@ -20,8 +20,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../roles/roles.decorator';
+import { RolesGuard } from '../roles/roles.guard';
 
 @Controller('hotel')
+@UseGuards(AuthGuard, RolesGuard)
+@Roles('HotelOwner')
 export class HotelController {
   constructor(
     private readonly hotelService: HotelService,

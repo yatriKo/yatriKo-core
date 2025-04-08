@@ -26,8 +26,8 @@ export class BookingHotelController {
   }
 
   @Get()
-  findAll() {
-    return this.bookingHotelService.findAll();
+  findAll(@Request() req) {
+    return this.bookingHotelService.findAll(req.user.sub);
   }
 
   @Get(':id')
