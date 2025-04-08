@@ -60,7 +60,7 @@ function App() {
       {/* Navigation Bar */}
       <nav className="fixed top-0 left-0 w-full bg-[rgba(0,0,0,0.3)] z-[1000] py-[15px] px-[20px] flex items-center justify-between">
         <div className="text-2xl font-bold text-[#FEFAE0] mr-5 order-1">
-          <span className="italic">Yatri</span> <span className="hindi-text">को</span>
+          <span className="italic">Yatri</span> <span className="text">को</span>
         </div>
 
         <ul className="list-none flex items-center justify-center flex-grow order-2 md:flex hidden">
