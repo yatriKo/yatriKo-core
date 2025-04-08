@@ -11,98 +11,196 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as MainImport } from './routes/main'
-import { Route as IndexImport } from './routes/index'
-import { Route as AboutIndexImport } from './routes/about/index'
+import { Route as WithLayoutImport } from './routes/_WithLayout'
+import { Route as AuthImport } from './routes/_Auth'
+import { Route as AuthIndexImport } from './routes/_Auth/index'
+import { Route as WithLayoutHotelIndexImport } from './routes/_WithLayout/hotel/index'
+import { Route as WithLayoutDashboardIndexImport } from './routes/_WithLayout/dashboard/index'
+import { Route as WithLayoutHotelAddIndexImport } from './routes/_WithLayout/hotel/add/index'
+import { Route as WithLayoutHotelEditIndexImport } from './routes/_WithLayout/hotel/$edit/index'
 
 // Create/Update Routes
 
-const MainRoute = MainImport.update({
-  id: '/main',
-  path: '/main',
+const WithLayoutRoute = WithLayoutImport.update({
+  id: '/_WithLayout',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const AuthRoute = AuthImport.update({
+  id: '/_Auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthIndexRoute = AuthIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const AboutIndexRoute = AboutIndexImport.update({
-  id: '/about/',
-  path: '/about/',
-  getParentRoute: () => rootRoute,
+const WithLayoutHotelIndexRoute = WithLayoutHotelIndexImport.update({
+  id: '/hotel/',
+  path: '/hotel/',
+  getParentRoute: () => WithLayoutRoute,
+} as any)
+
+const WithLayoutDashboardIndexRoute = WithLayoutDashboardIndexImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => WithLayoutRoute,
+} as any)
+
+const WithLayoutHotelAddIndexRoute = WithLayoutHotelAddIndexImport.update({
+  id: '/hotel/add/',
+  path: '/hotel/add/',
+  getParentRoute: () => WithLayoutRoute,
+} as any)
+
+const WithLayoutHotelEditIndexRoute = WithLayoutHotelEditIndexImport.update({
+  id: '/hotel/$edit/',
+  path: '/hotel/$edit/',
+  getParentRoute: () => WithLayoutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_Auth': {
+      id: '/_Auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/_WithLayout': {
+      id: '/_WithLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof WithLayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/_Auth/': {
+      id: '/_Auth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthImport
     }
-    '/main': {
-      id: '/main'
-      path: '/main'
-      fullPath: '/main'
-      preLoaderRoute: typeof MainImport
-      parentRoute: typeof rootRoute
+    '/_WithLayout/dashboard/': {
+      id: '/_WithLayout/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof WithLayoutDashboardIndexImport
+      parentRoute: typeof WithLayoutImport
     }
-    '/about/': {
-      id: '/about/'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutIndexImport
-      parentRoute: typeof rootRoute
+    '/_WithLayout/hotel/': {
+      id: '/_WithLayout/hotel/'
+      path: '/hotel'
+      fullPath: '/hotel'
+      preLoaderRoute: typeof WithLayoutHotelIndexImport
+      parentRoute: typeof WithLayoutImport
+    }
+    '/_WithLayout/hotel/$edit/': {
+      id: '/_WithLayout/hotel/$edit/'
+      path: '/hotel/$edit'
+      fullPath: '/hotel/$edit'
+      preLoaderRoute: typeof WithLayoutHotelEditIndexImport
+      parentRoute: typeof WithLayoutImport
+    }
+    '/_WithLayout/hotel/add/': {
+      id: '/_WithLayout/hotel/add/'
+      path: '/hotel/add'
+      fullPath: '/hotel/add'
+      preLoaderRoute: typeof WithLayoutHotelAddIndexImport
+      parentRoute: typeof WithLayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface WithLayoutRouteChildren {
+  WithLayoutDashboardIndexRoute: typeof WithLayoutDashboardIndexRoute
+  WithLayoutHotelIndexRoute: typeof WithLayoutHotelIndexRoute
+  WithLayoutHotelEditIndexRoute: typeof WithLayoutHotelEditIndexRoute
+  WithLayoutHotelAddIndexRoute: typeof WithLayoutHotelAddIndexRoute
+}
+
+const WithLayoutRouteChildren: WithLayoutRouteChildren = {
+  WithLayoutDashboardIndexRoute: WithLayoutDashboardIndexRoute,
+  WithLayoutHotelIndexRoute: WithLayoutHotelIndexRoute,
+  WithLayoutHotelEditIndexRoute: WithLayoutHotelEditIndexRoute,
+  WithLayoutHotelAddIndexRoute: WithLayoutHotelAddIndexRoute,
+}
+
+const WithLayoutRouteWithChildren = WithLayoutRoute._addFileChildren(
+  WithLayoutRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/main': typeof MainRoute
-  '/about': typeof AboutIndexRoute
+  '': typeof WithLayoutRouteWithChildren
+  '/': typeof AuthIndexRoute
+  '/dashboard': typeof WithLayoutDashboardIndexRoute
+  '/hotel': typeof WithLayoutHotelIndexRoute
+  '/hotel/$edit': typeof WithLayoutHotelEditIndexRoute
+  '/hotel/add': typeof WithLayoutHotelAddIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/main': typeof MainRoute
-  '/about': typeof AboutIndexRoute
+  '': typeof WithLayoutRouteWithChildren
+  '/': typeof AuthIndexRoute
+  '/dashboard': typeof WithLayoutDashboardIndexRoute
+  '/hotel': typeof WithLayoutHotelIndexRoute
+  '/hotel/$edit': typeof WithLayoutHotelEditIndexRoute
+  '/hotel/add': typeof WithLayoutHotelAddIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/main': typeof MainRoute
-  '/about/': typeof AboutIndexRoute
+  '/_Auth': typeof AuthRouteWithChildren
+  '/_WithLayout': typeof WithLayoutRouteWithChildren
+  '/_Auth/': typeof AuthIndexRoute
+  '/_WithLayout/dashboard/': typeof WithLayoutDashboardIndexRoute
+  '/_WithLayout/hotel/': typeof WithLayoutHotelIndexRoute
+  '/_WithLayout/hotel/$edit/': typeof WithLayoutHotelEditIndexRoute
+  '/_WithLayout/hotel/add/': typeof WithLayoutHotelAddIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/main' | '/about'
+  fullPaths: '' | '/' | '/dashboard' | '/hotel' | '/hotel/$edit' | '/hotel/add'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/main' | '/about'
-  id: '__root__' | '/' | '/main' | '/about/'
+  to: '' | '/' | '/dashboard' | '/hotel' | '/hotel/$edit' | '/hotel/add'
+  id:
+    | '__root__'
+    | '/_Auth'
+    | '/_WithLayout'
+    | '/_Auth/'
+    | '/_WithLayout/dashboard/'
+    | '/_WithLayout/hotel/'
+    | '/_WithLayout/hotel/$edit/'
+    | '/_WithLayout/hotel/add/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  MainRoute: typeof MainRoute
-  AboutIndexRoute: typeof AboutIndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  WithLayoutRoute: typeof WithLayoutRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  MainRoute: MainRoute,
-  AboutIndexRoute: AboutIndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  WithLayoutRoute: WithLayoutRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -115,19 +213,44 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/main",
-        "/about/"
+        "/_Auth",
+        "/_WithLayout"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_Auth": {
+      "filePath": "_Auth.tsx",
+      "children": [
+        "/_Auth/"
+      ]
     },
-    "/main": {
-      "filePath": "main.tsx"
+    "/_WithLayout": {
+      "filePath": "_WithLayout.tsx",
+      "children": [
+        "/_WithLayout/dashboard/",
+        "/_WithLayout/hotel/",
+        "/_WithLayout/hotel/$edit/",
+        "/_WithLayout/hotel/add/"
+      ]
     },
-    "/about/": {
-      "filePath": "about/index.tsx"
+    "/_Auth/": {
+      "filePath": "_Auth/index.tsx",
+      "parent": "/_Auth"
+    },
+    "/_WithLayout/dashboard/": {
+      "filePath": "_WithLayout/dashboard/index.tsx",
+      "parent": "/_WithLayout"
+    },
+    "/_WithLayout/hotel/": {
+      "filePath": "_WithLayout/hotel/index.tsx",
+      "parent": "/_WithLayout"
+    },
+    "/_WithLayout/hotel/$edit/": {
+      "filePath": "_WithLayout/hotel/$edit/index.tsx",
+      "parent": "/_WithLayout"
+    },
+    "/_WithLayout/hotel/add/": {
+      "filePath": "_WithLayout/hotel/add/index.tsx",
+      "parent": "/_WithLayout"
     }
   }
 }
