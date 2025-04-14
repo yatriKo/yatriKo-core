@@ -43,7 +43,7 @@ export default function NavBar() {
   };
 
   const menuItems = [
-    { label: "Home Page", href: "/" },
+    { label: "Home", href: "/" },
     { label: "About Us", href: "/about" },
     { label: "Services", href: "/services" },
   ];
