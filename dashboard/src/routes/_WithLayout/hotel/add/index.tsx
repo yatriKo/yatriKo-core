@@ -105,8 +105,6 @@ function RouteComponent() {
       .filter(([_, value]) => value.numberOfRoom > 0)
       .map(([key, value]) => ({ type: key, ...value }));
 
-    console.log(roomType);
-
     uploadHotelImage(formData, {
       onSuccess: (img) => {
         uploadHotel(

@@ -59,7 +59,6 @@ function Index() {
       setIsActive(false);
     } catch (error) {
       setLoginError(true);
-      console.log(error);
     }
   };
 
@@ -74,7 +73,6 @@ function Index() {
         },
         {
           onSuccess: (data) => {
-            console.log(data.data);
             setToken(data.data);
           },
         }
@@ -82,7 +80,6 @@ function Index() {
       router.navigate({ to: "/dashboard" });
     } catch (error) {
       setLoginError(true);
-      console.log(error);
     }
   };
 
