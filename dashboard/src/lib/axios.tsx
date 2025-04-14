@@ -12,9 +12,9 @@ let instance = axios.create(defaultOptions);
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("yatriKoToken");
-    console.log(token);
     if (token) {
-      config.headers.Authorization = token;
+      const parsedToken = JSON.parse(token);
+      config.headers.Authorization = parsedToken?.accessToken;
     }
     return config;
   },
