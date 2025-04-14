@@ -1,4 +1,13 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+export const Route = createFileRoute("/_WithLayout/bus/$edit/")({
+  component: RouteComponent,
+});
+
+import {
+  createFileRoute,
+  Link,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,14 +21,14 @@ import {
 } from "../../../../../components/ui/form";
 import { Input } from "../../../../../components/ui/input";
 import { Button } from "../../../../../components/ui/button";
-import { useState } from "react";
-import { useUploadHotelImage, useUploadHotelInfo } from "../-queries";
+import { useEffect, useState } from "react";
+import {
+  useGetIndividualHotel,
+  useUploadHotelImage,
+  useUploadHotelInfo,
+} from "../-queries";
 import { toast } from "sonner";
 import { ChevronLeft } from "lucide-react";
-
-export const Route = createFileRoute("/_WithLayout/hotel/add/")({
-  component: RouteComponent,
-});
 
 const hotelFormSchema = z.object({
   hotelName: z.string().min(1, "Hotel name is required"),
@@ -62,6 +71,10 @@ const hotelFormSchema = z.object({
 type HotelFormValues = z.infer<typeof hotelFormSchema>;
 
 function RouteComponent() {
+  const { edit } = useParams({ from: "/_WithLayout/hotel/$edit/" });
+
+  const { data, isSuccess, isFetching } = useGetIndividualHotel(edit);
+
   const form = useForm<HotelFormValues>({
     resolver: zodResolver(hotelFormSchema),
     defaultValues: {
@@ -75,6 +88,45 @@ function RouteComponent() {
       },
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      const groupedRooms: Record<
+        string,
+        { price: number; numberOfRoom: number }
+      > = {
+        standard: {
+          price: 0,
+          numberOfRoom: 0,
+        },
+        deluxe: {
+          price: 0,
+          numberOfRoom: 0,
+        },
+        premium: {
+          price: 0,
+          numberOfRoom: 0,
+        },
+      };
+
+      data.data.rooms.forEach((room) => {
+        const type = room.roomType.toLowerCase();
+        if (groupedRooms[type]) {
+          groupedRooms[type].numberOfRoom += 1;
+          groupedRooms[type].price = room.price;
+        }
+      });
+
+      form.reset({
+        hotelLocation: data.data.location,
+        hotelName: data.data.name,
+        hotelNumber: data.data.phoneNumber,
+        rooms: groupedRooms,
+      });
+
+      setImagePreview(data.data.image[0]);
+    }
+  }, [isSuccess, isFetching]);
 
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -134,7 +186,7 @@ function RouteComponent() {
         <Link to="/hotel">
           <ChevronLeft />
         </Link>
-        <h1 className="text-4xl font-medium">Add Hotel</h1>
+        <h1 className="text-4xl font-medium">Edit Hotel</h1>
       </div>
 
       <Form {...form}>

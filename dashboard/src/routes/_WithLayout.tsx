@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import { Hotel, LayoutDashboard } from "lucide-react";
+import { Bus, Hotel, LayoutDashboard } from "lucide-react";
 
 export const Route = createFileRoute("/_WithLayout")({
   component: RouteComponent,
@@ -23,6 +23,13 @@ function RouteComponent() {
         >
           <Hotel size={24} />
           Hotel
+        </Link>
+        <Link
+          to="/bus"
+          className="[&.active]:bg-amber-300 px-4 text-white mt-4 h-10 rounded-md flex gap-1 items-center"
+        >
+          <Bus size={24} />
+          bus
         </Link>
       </div>
       <div className="px-8 pl-[264px] py-16 w-full">

@@ -17,7 +17,7 @@ import { useUploadHotelImage, useUploadHotelInfo } from "../-queries";
 import { toast } from "sonner";
 import { ChevronLeft } from "lucide-react";
 
-export const Route = createFileRoute("/_WithLayout/hotel/add/")({
+export const Route = createFileRoute("/_WithLayout/bus/add/")({
   component: RouteComponent,
 });
 
