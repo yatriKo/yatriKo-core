@@ -19,18 +19,19 @@ export type Bus = Array<{
   }>;
 }>;
 
-export type IndividualHotel = {
+export type IndividualBus = {
   id: number;
-  name: string;
   dashboardUserId: number;
-  location: string;
-  phoneNumber: string;
+  from: string;
   image: Array<string>;
-  rooms: Array<{
+  to: string;
+  date: string;
+  busNumber: string;
+  phoneNumber: string;
+  busSeats: Array<{
     id: number;
-    hotelId: number;
-    roomType: string;
-    image: Array<any>;
+    busId: number;
+    seatType: string;
     price: number;
   }>;
 };
@@ -39,21 +40,23 @@ interface UploadFileResponse {
   url: string;
 }
 
-type HotelInfo = {
-  name: string;
-  location: string;
+type BusInfo = {
+  from: string;
+  image: Array<string>;
+  to: string;
+  date: string;
+  busNumber: string;
   phoneNumber: string;
-  hotelImage: string[];
-  roomType: (
-    | { price: number; numberOfRoom: number; type: string }
-    | { price: number; numberOfRoom: number; type: string }
-    | { price: number; numberOfRoom: number; type: string }
-  )[];
+  busSeats: Array<{
+    seatType: string;
+    price: number;
+    numberOfSeats: number;
+  }>;
 };
 
 export const useGetBus = () => {
   const data = useQuery<AxiosResponse<Bus>, Error>({
-    queryKey: ["getHotel"],
+    queryKey: ["getBus"],
     queryFn: async () => {
       return await instance.get("/bus");
     },
@@ -62,9 +65,9 @@ export const useGetBus = () => {
   return data;
 };
 
-export const useGetIndividualHotel = (id: string) => {
-  const data = useQuery<AxiosResponse<IndividualHotel, string>, Error>({
-    queryKey: ["getIndividualHotel", id],
+export const useGetIndividualBus = (id: string) => {
+  const data = useQuery<AxiosResponse<IndividualBus, string>, Error>({
+    queryKey: ["getIndividualBus", id],
     queryFn: async () => {
       return await instance.get(`/bus/${id}`);
     },
@@ -73,7 +76,7 @@ export const useGetIndividualHotel = (id: string) => {
   return data;
 };
 
-export const useDeleteHotel = () => {
+export const useDeleteBus = () => {
   const data = useMutation({
     mutationFn: async (id: number) => {
       await instance.delete(`/bus/${id}`);
@@ -82,7 +85,7 @@ export const useDeleteHotel = () => {
   return data;
 };
 
-export const useUploadHotelImage = () => {
+export const useUploadBusImage = () => {
   return useMutation<UploadFileResponse, AxiosError, FormData>({
     mutationFn: async (val: FormData) => {
       const { data } = await instance.post("/bus/bus-image", val, {
@@ -93,10 +96,10 @@ export const useUploadHotelImage = () => {
   });
 };
 
-export const useUploadHotelInfo = () => {
+export const useUploadBusInfo = () => {
   return useMutation({
-    mutationFn: async (hotelInfo: HotelInfo) => {
-      const { data } = await instance.post("/bus", hotelInfo);
+    mutationFn: async (busInfo: BusInfo) => {
+      const { data } = await instance.post("/bus", busInfo);
       return data;
     },
     // onSuccess: () => {

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useDeleteHotel, useGetBus } from "./-queries";
+import { useDeleteBus, useGetBus } from "./-queries";
 import {
   Table,
   TableBody,
@@ -19,6 +19,7 @@ import { Button } from "./../../../../components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { queryClient } from "../../__root";
+import dayjs from "dayjs";
 
 export const Route = createFileRoute("/_WithLayout/bus/")({
   component: RouteComponent,
@@ -27,15 +28,15 @@ export const Route = createFileRoute("/_WithLayout/bus/")({
 function RouteComponent() {
   const { data, isLoading } = useGetBus();
 
-  const { mutateAsync, isPending } = useDeleteHotel();
+  const { mutateAsync, isPending } = useDeleteBus();
 
   const { navigate } = useRouter();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [hotelId, setHotelId] = useState(0);
+  const [busId, setBusId] = useState(0);
 
   const deleteHotel = () => {
-    mutateAsync(hotelId, {
+    mutateAsync(busId, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["getHotel"] });
       },
@@ -69,6 +70,7 @@ function RouteComponent() {
                 <TableHead>From</TableHead>
                 <TableHead>To</TableHead>
                 <TableHead>Phone Number</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead className="w-[100px]">Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -78,18 +80,21 @@ function RouteComponent() {
                   <TableRow
                     key={idx}
                     className="cursor-pointer pointer-events-auto"
-                    onClick={() => navigate({ to: `/hotel/${bus.id}` })}
+                    onClick={() => navigate({ to: `/bus/${bus.id}` })}
                   >
                     <TableCell>{bus.busNumber}</TableCell>
                     <TableCell>{bus.from}</TableCell>
                     <TableCell>{bus.to}</TableCell>
                     <TableCell>{bus.phoneNumber}</TableCell>
+                    <TableCell>
+                      {dayjs(bus.date).format("DD/MM/YYYY")}
+                    </TableCell>
                     <TableCell
                       className="cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenDeleteModal(true);
-                        setHotelId(bus.id);
+                        setBusId(bus.id);
                       }}
                     >
                       <Trash2 color="red" />
