@@ -21,115 +21,117 @@ import {
 } from "../../../../../components/ui/form";
 import { Input } from "../../../../../components/ui/input";
 import { Button } from "../../../../../components/ui/button";
+import { DatePicker } from "../../../../../components/ui/datePicker";
 import { useEffect, useState } from "react";
-import {
-  useGetIndividualHotel,
-  useUploadHotelImage,
-  useUploadHotelInfo,
-} from "../-queries";
 import { toast } from "sonner";
 import { ChevronLeft } from "lucide-react";
+import {
+  useGetIndividualBus,
+  useUploadBusImage,
+  useUploadBusInfo,
+} from "../-queries";
+import dayjs from "dayjs";
 
-const hotelFormSchema = z.object({
-  hotelName: z.string().min(1, "Hotel name is required"),
-  hotelNumber: z.string().min(1, "Hotel number is required"),
-  hotelLocation: z.string().min(1, "Hotel location is required"),
+const busFormSchema = z.object({
+  from: z.string().min(1, "From location is required"),
+  to: z.string().min(1, "To location is required"),
+  date: z.date(),
+  busNumber: z.string().min(1, "Bus number is required"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
   picture: z
     .instanceof(FileList)
-    .refine((files) => files?.length > 0, "Hotel image is required"),
-  rooms: z.object({
-    standard: z
+    .refine((files) => files?.length > 0, "Bus image is required"),
+  busSeats: z.object({
+    Front: z
       .object({
         price: z.number(),
-        numberOfRoom: z.number().min(0, "Number of rooms cannot be negative"),
+        numberOfSeats: z.number().min(0, "Cannot be negative"),
       })
-      .refine((data) => data.numberOfRoom === 0 || data.price >= 1, {
-        message: "Price must be at least 1 when rooms are available",
+      .refine((data) => data.numberOfSeats === 0 || data.price >= 1, {
+        message: "Price must be at least 1 when seats are available",
         path: ["price"],
       }),
-    deluxe: z
+    Middle: z
       .object({
         price: z.number(),
-        numberOfRoom: z.number().min(0, "Number of rooms cannot be negative"),
+        numberOfSeats: z.number().min(0, "Cannot be negative"),
       })
-      .refine((data) => data.numberOfRoom === 0 || data.price >= 1, {
-        message: "Price must be at least 1 when rooms are available",
+      .refine((data) => data.numberOfSeats === 0 || data.price >= 1, {
+        message: "Price must be at least 1 when seats are available",
         path: ["price"],
       }),
-    premium: z
+    Back: z
       .object({
         price: z.number(),
-        numberOfRoom: z.number().min(0, "Number of rooms cannot be negative"),
+        numberOfSeats: z.number().min(0, "Cannot be negative"),
       })
-      .refine((data) => data.numberOfRoom === 0 || data.price >= 1, {
-        message: "Price must be at least 1 when rooms are available",
+      .refine((data) => data.numberOfSeats === 0 || data.price >= 1, {
+        message: "Price must be at least 1 when seats are available",
         path: ["price"],
       }),
   }),
 });
 
-type HotelFormValues = z.infer<typeof hotelFormSchema>;
+type BusFormValues = z.infer<typeof busFormSchema>;
 
 function RouteComponent() {
-  const { edit } = useParams({ from: "/_WithLayout/hotel/$edit/" });
+  const { edit } = useParams({ from: "/_WithLayout/bus/$edit/" });
 
-  const { data, isSuccess, isFetching } = useGetIndividualHotel(edit);
-
-  const form = useForm<HotelFormValues>({
-    resolver: zodResolver(hotelFormSchema),
-    defaultValues: {
-      hotelName: "",
-      hotelNumber: "",
-      hotelLocation: "",
-      rooms: {
-        standard: { price: 0, numberOfRoom: 0 },
-        deluxe: { price: 0, numberOfRoom: 0 },
-        premium: { price: 0, numberOfRoom: 0 },
-      },
-    },
-  });
+  const { data, isSuccess, isFetching } = useGetIndividualBus(edit);
 
   useEffect(() => {
     if (data) {
-      const groupedRooms: Record<
+      console.log(data.data.busSeats);
+      const groupedSeats: Record<
         string,
-        { price: number; numberOfRoom: number }
+        { price: number; numberOfSeats: number }
       > = {
-        standard: {
-          price: 0,
-          numberOfRoom: 0,
-        },
-        deluxe: {
-          price: 0,
-          numberOfRoom: 0,
-        },
-        premium: {
-          price: 0,
-          numberOfRoom: 0,
-        },
+        Front: { price: 0, numberOfSeats: 0 },
+        Middle: { price: 0, numberOfSeats: 0 },
+        Back: { price: 0, numberOfSeats: 0 },
       };
 
-      data.data.rooms.forEach((room) => {
-        const type = room.roomType.toLowerCase();
-        if (groupedRooms[type]) {
-          groupedRooms[type].numberOfRoom += 1;
-          groupedRooms[type].price = room.price;
+      data.data.busSeats.forEach((seat) => {
+        const type = seat.seatType;
+        if (groupedSeats[type]) {
+          groupedSeats[type].numberOfSeats += 1;
+          groupedSeats[type].price = seat.price;
         }
       });
 
       form.reset({
-        hotelLocation: data.data.location,
-        hotelName: data.data.name,
-        hotelNumber: data.data.phoneNumber,
-        rooms: groupedRooms,
+        busNumber: data.data.busNumber,
+        date: dayjs(data.data.date).toDate(),
+        from: data.data.from,
+        phoneNumber: data.data.phoneNumber,
+        to: data.data.to,
+        busSeats: groupedSeats,
       });
 
       setImagePreview(data.data.image[0]);
     }
   }, [isSuccess, isFetching]);
 
+  const form = useForm<BusFormValues>({
+    resolver: zodResolver(busFormSchema),
+    defaultValues: {
+      from: "",
+      to: "",
+      date: new Date(),
+      busNumber: "",
+      phoneNumber: "",
+      busSeats: {
+        Front: { price: 0, numberOfSeats: 0 },
+        Middle: { price: 0, numberOfSeats: 0 },
+        Back: { price: 0, numberOfSeats: 0 },
+      },
+    },
+  });
+
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const { mutateAsync: uploadImage } = useUploadBusImage();
+  const { mutateAsync: uploadInfo } = useUploadBusInfo();
 
   const handleImageChange = (fileList: FileList | null) => {
     const file = fileList?.[0];
@@ -144,35 +146,36 @@ function RouteComponent() {
     }
   };
 
-  const { mutateAsync: uploadHotelImage } = useUploadHotelImage();
-  const { mutateAsync: uploadHotel } = useUploadHotelInfo();
-
-  const onSubmit = (data: HotelFormValues) => {
+  const onSubmit = (data: BusFormValues) => {
     const formData = new FormData();
     formData.append("image", data.picture[0]);
 
-    const rooms = data.rooms;
+    const seats = data.busSeats;
+    const busSeats = Object.entries(seats)
+      .filter(([_, val]) => val.numberOfSeats > 0)
+      .map(([type, val]) => ({
+        seatType: type.charAt(0).toUpperCase() + type.slice(1),
+        ...val,
+      }));
 
-    const roomType = Object.entries(rooms)
-      .filter(([_, value]) => value.numberOfRoom > 0)
-      .map(([key, value]) => ({ type: key, ...value }));
-
-    uploadHotelImage(formData, {
+    uploadImage(formData, {
       onSuccess: (img) => {
-        uploadHotel(
+        uploadInfo(
           {
-            hotelImage: [img.url],
-            location: data.hotelLocation,
-            name: data.hotelName,
-            phoneNumber: data.hotelNumber,
-            roomType: roomType,
+            from: data.from,
+            to: data.to,
+            date: dayjs(data.date).format("DD/MM/YYYY"),
+            busNumber: data.busNumber,
+            phoneNumber: data.phoneNumber,
+            image: [img.url],
+            busSeats,
           },
           {
             onSuccess: () => {
-              router.navigate({ to: "/hotel" });
-              toast("Hotel has been created", {
-                description: "Hotel has been successfully created",
+              toast("Bus has been added", {
+                description: "Successfully created bus entry",
               });
+              router.navigate({ to: "/bus" });
             },
           }
         );
@@ -183,10 +186,10 @@ function RouteComponent() {
   return (
     <div className="p-4">
       <div className="flex gap-2 items-center mb-6">
-        <Link to="/hotel">
+        <Link to="/bus">
           <ChevronLeft />
         </Link>
-        <h1 className="text-4xl font-medium">Edit Hotel</h1>
+        <h1 className="text-4xl font-medium">Edit Bus</h1>
       </div>
 
       <Form {...form}>
@@ -194,43 +197,67 @@ function RouteComponent() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-5 w-full max-w-md"
         >
-          {/* Hotel Details */}
+          {/* Bus Details */}
           <FormField
             control={form.control}
-            name="hotelName"
+            name="busNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hotel Name</FormLabel>
+                <FormLabel>Bus Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter hotel name" {...field} />
+                  <Input placeholder="Enter bus number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
-            name="hotelNumber"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hotel Number</FormLabel>
+                <FormLabel>Phone Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter hotel number" {...field} />
+                  <Input placeholder="Enter phone number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
-            name="hotelLocation"
+            name="from"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hotel Location</FormLabel>
+                <FormLabel>From</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter hotel location" {...field} />
+                  <Input placeholder="Enter origin" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="to"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>To</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter destination" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <FormControl>
+                  <DatePicker value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -243,7 +270,7 @@ function RouteComponent() {
             name="picture"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hotel Picture</FormLabel>
+                <FormLabel>Bus Picture</FormLabel>
                 <FormControl>
                   <Input
                     type="file"
@@ -267,16 +294,15 @@ function RouteComponent() {
             />
           )}
 
-          {/* Room Type Inputs */}
-          <h3 className="text-xl font-semibold mt-6 mb-2">Room Types</h3>
-
-          {(["standard", "deluxe", "premium"] as const).map((roomKey) => (
-            <div key={roomKey} className="space-y-4 p-4 border rounded-lg">
-              <h4 className="text-lg font-medium capitalize">{roomKey} Room</h4>
+          {/* Seat Types */}
+          <h3 className="text-xl font-semibold mt-6 mb-2">Seat Types</h3>
+          {(["Front", "Middle", "Back"] as const).map((seatKey) => (
+            <div key={seatKey} className="space-y-4 p-4 border rounded-lg">
+              <h4 className="text-lg font-medium capitalize">{seatKey} Seat</h4>
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name={`rooms.${roomKey}.price`}
+                  name={`busSeats.${seatKey}.price`}
                   render={({ field, fieldState }) => (
                     <FormItem>
                       <FormLabel>Price</FormLabel>
@@ -288,10 +314,11 @@ function RouteComponent() {
                             const value = parseInt(e.target.value) || 0;
                             field.onChange(value);
                             if (
-                              form.getValues(`rooms.${roomKey}.numberOfRoom`) >
-                              0
+                              form.getValues(
+                                `busSeats.${seatKey}.numberOfSeats`
+                              ) > 0
                             ) {
-                              form.trigger(`rooms.${roomKey}.price`);
+                              form.trigger(`busSeats.${seatKey}.price`);
                             }
                           }}
                         />
@@ -304,18 +331,18 @@ function RouteComponent() {
                 />
                 <FormField
                   control={form.control}
-                  name={`rooms.${roomKey}.numberOfRoom`}
+                  name={`busSeats.${seatKey}.numberOfSeats`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>No. of Rooms</FormLabel>
+                      <FormLabel>No. of Seats</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Number of rooms"
+                          placeholder="Number of seats"
                           value={field.value}
                           onChange={(e) => {
                             const value = parseInt(e.target.value) || 0;
                             field.onChange(value);
-                            form.trigger(`rooms.${roomKey}.price`);
+                            form.trigger(`busSeats.${seatKey}.price`);
                           }}
                         />
                       </FormControl>
