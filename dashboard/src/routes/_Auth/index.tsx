@@ -74,10 +74,13 @@ function Index() {
         {
           onSuccess: (data) => {
             setToken(data.data);
+            router.navigate({ to: "/dashboard" });
+          },
+          onError: () => {
+            setLoginError(true);
           },
         }
       );
-      router.navigate({ to: "/dashboard" });
     } catch (error) {
       setLoginError(true);
     }
@@ -121,7 +124,7 @@ function Index() {
               />
               <input
                 type="text"
-                placeholder="Phone Number"
+                placeholder="Enter Role(HotelOwner or BusOwner)"
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpRole(e.target.value)}
               />

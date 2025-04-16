@@ -97,8 +97,5 @@ export const useUploadHotelInfo = () => {
       const { data } = await instance.post("/hotel", hotelInfo);
       return data;
     },
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["getHotel"] });
-    // },
   });
 };
