@@ -19,6 +19,8 @@ import { CloudinaryService } from '../cloudinary.service';
 import { FindBusDto } from './dto/find-all-bus.dto';
 
 @Controller('bus')
+@UseGuards(AuthGuard, RolesGuard)
+@Roles('BusOwner')
 export class BusController {
   constructor(
     private readonly busService: BusService,
