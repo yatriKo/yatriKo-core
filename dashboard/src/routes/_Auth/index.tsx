@@ -86,12 +86,6 @@ function Index() {
     }
   };
 
-  // useEffect(() => {
-  //   if (token) {
-  //     router.replace("/");
-  //   }
-  // }, [token, router]);
-
   return (
     <div className="flex items-center justify-center flex-col h-screen bg-gradient-to-r from-[#e2e2e2] to-[#c9d6ff]">
       <div

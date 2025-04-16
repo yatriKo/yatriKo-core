@@ -68,6 +68,7 @@ type busBooking = Array<{
   travelerAgent: any;
 }>;
 
+// fetch all the booking detail of the hotel
 export const useGetDashboardDetail = () => {
   const data = useQuery<AxiosResponse<bookings, string>, Error>({
     queryKey: ["bookings"],
@@ -79,6 +80,7 @@ export const useGetDashboardDetail = () => {
   return data;
 };
 
+// fetch all the booking detail of the bus
 export const useGetDashboardDetailBus = () => {
   const data = useQuery<AxiosResponse<busBooking, string>, Error>({
     queryKey: ["busBooking"],
@@ -90,6 +92,7 @@ export const useGetDashboardDetailBus = () => {
   return data;
 };
 
+// delete the hotel's booking
 export const useDeleteBooking = () => {
   const data = useMutation({
     mutationFn: async (id: number) => {
@@ -99,6 +102,7 @@ export const useDeleteBooking = () => {
   return data;
 };
 
+// delete the bus's booking
 export const useDeleteBookingBus = () => {
   const data = useMutation({
     mutationFn: async (id: number) => {
