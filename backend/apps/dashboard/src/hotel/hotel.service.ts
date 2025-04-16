@@ -6,12 +6,16 @@ import { PrismaService } from 'apps/prisma/prisma.service';
 
 @Injectable()
 export class HotelService {
+  // declaring PrismaService in constructor so that all function inside can use the PrismaService
   constructor(private readonly prismaService: PrismaService) {}
 
+  //async function to crerate hotel
   async create(createHotelDto: CreateHotelDto, id: number) {
+    // destructuring all the infos
     const { location, name, hotelImage, phoneNumber, roomType } =
       createHotelDto;
 
+    // using prisma to fetch the hotel detail
     const hotel = await this.prismaService.hotel.create({
       data: {
         name,
@@ -34,6 +38,7 @@ export class HotelService {
       },
     });
 
+    //returning the data fetched
     return hotel;
   }
 
