@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import 'react-datepicker/dist/react-datepicker.css';
+import { useState, useEffect } from 'react';
 
-import DatePicker from 'react-datepicker'; // ✅ Import added here
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,53 +18,66 @@ import {
 function App() {
   const [sidebarActive, setSidebarActive] = useState(false);
   const [bookingPopupActive, setBookingPopupActive] = useState(false);
+  const [confirmationPopupActive, setConfirmationPopupActive] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<{ id?: number; label: string; price: string } | null>(null);
 
-  const [checkInDate, setCheckInDate] = useState<Date | null>(null);  // ✅ State for check-in
-  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null); // ✅ State for check-out
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+  const [paymentPopupActive, setPaymentPopupActive] = useState(false);
+  const [finalPopupActive, setFinalPopupActive] = useState(false);
 
+  // Hide sidebar when resizing to desktop view
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setSidebarActive(false);
       }
     };
-
     window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
+  // Hide booking popup when clicking outside
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const bookingIcon = document.querySelector('.fa-house');
-      const bookingPopup = document.getElementById('booking-popup');
+      const popups = document.querySelectorAll('.custom-popup, .confirmation-popup');
 
-      if (
-        bookingPopup &&
-        !bookingPopup.contains(event.target as Node) &&
-        bookingIcon &&
-        bookingIcon.parentElement &&
-        !bookingIcon.parentElement.contains(event.target as Node)
-      ) {
-        setBookingPopupActive(false);
+      let clickedInsideAnyPopup = false;
+      popups.forEach(popup => {
+        if (popup.contains(event.target as Node)) {
+          clickedInsideAnyPopup = true;
+        }
+      });
+
+      if (!clickedInsideAnyPopup) {
+        setConfirmationPopupActive(false);
+        setPaymentPopupActive(false);
+        setFinalPopupActive(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      document.removeEventListener('click', handleClickOutside);
-    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleSidebar = () => {
-    setSidebarActive(!sidebarActive);
-  };
+  // Hide confirmation popup when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const popup = document.querySelector('.confirmation-popup');
+      if (confirmationPopupActive && popup && !popup.contains(event.target as Node)) {
+        setConfirmationPopupActive(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [confirmationPopupActive]);
 
-  const toggleBookingPopup = () => {
-    setBookingPopupActive(!bookingPopupActive);
-  };
+  const toggleSidebar = () => setSidebarActive(!sidebarActive);
+  const toggleBookingPopup = () => setBookingPopupActive(!bookingPopupActive);
 
   return (
     <div className="font-sans m-0 p-0 text-center text-[#264653] min-h-screen overflow-x-hidden bg-[#f5f5f5]">
-      {/* Navigation Bar */}
+      {/* Navigation */}
       <nav className="fixed top-0 left-0 w-full bg-[rgba(0,0,0,0.3)] z-[1000] py-[15px] px-[20px] flex items-center justify-between">
         <div className="text-2xl font-bold text-[#FEFAE0] mr-5 order-1">
           <span className="italic">Yatri</span> <span className="text">को</span>
@@ -136,7 +149,8 @@ function App() {
       </div>
 
       <main className="pt-[100px]">
-      <header className="flex items-center justify-between p-[10px_20px] bg-[rgba(254,250,224,0.3)]">
+        {/* Header with booking icons */}
+        <header className="flex items-center justify-between p-[10px_20px] bg-[rgba(254,250,224,0.3)]">
   <div className="flex flex-col items-start">
     <div className="text-[28px] font-['Newsreader',serif] font-bold text-[#264653]">
       Lemon Tree GuestHouse
@@ -195,9 +209,8 @@ function App() {
   </div>
 </header>
 
-
-      {/* Scenic Images Row (3 items) */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
+        {/* Scenic images row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
   {[{ src: '/images/dummy1.jpeg' }, { src: '/images/dummy2.jpeg' }, { src: '/images/dummy3.jpeg' }].map((place, idx) => (
     <div key={idx} className="rounded-[10px] overflow-hidden relative shadow-lg">
       <img
@@ -238,41 +251,39 @@ function App() {
   </div>
 </div>
 
+        {/* Room Options */}
+        <div className="flex flex-row justify-center gap-4 mt-6 px-4 bg-[#F3EBEB] p-4 rounded-[10px]">
+          {[
+            { src: '/images/single.jpeg', label: 'Single bed room', price: '1500/- per night' },
+            { src: '/images/double.jpeg', label: 'Double bed room', price: '2500/- per night' },
+            { src: '/images/triple.jpeg', label: 'Triple bed room', price: '3200/- per night' },
+            { src: '/images/deluxe.jpeg', label: 'Deluxe room', price: '4000/- per night' },
+          ].map((room, idx) => (
+            <div
+              key={idx}
+              className="rounded-[10px] overflow-hidden relative shadow-md bg-white text-[#264653] p-2 text-center text-sm"
+            >
+              <img
+                src={room.src}
+                alt={room.label}
+                className="w-[203px] h-[199px] object-cover rounded-[4px] mx-auto"
+              />
+              <div className="mt-1 font-semibold text-sm">{room.label}</div>
+              <div className="text-xs">{room.price}</div>
+              <button
+                onClick={() => {
+                  setSelectedRoom({ label: room.label, price: room.price });
+                  setConfirmationPopupActive(true);
+                }}
+                className="mt-1 bg-[#264653] text-white px-3 py-1 rounded-full text-xs hover:bg-[#1e3d4a] transition"
+              >
+                Book now
+              </button>
+            </div>
+          ))}
+        </div>
 
-      {/* Scenic Images Row (4 items) */}
-      <div className="flex flex-row justify-center gap-4 mt-6 px-4 bg-[#F3EBEB] p-4 rounded-[10px]">
-  {[
-    { src: '/images/single.jpeg', label: 'Single bed room', price: '1500/- per night' },
-    { src: '/images/double.jpeg', label: 'Double bed room', price: '2500/- per night' },
-    { src: '/images/triple.jpeg', label: 'Triple bed room', price: '3200/- per night' },
-    { src: '/images/deluxe.jpeg', label: 'Deluxe room', price: '4000/- per night' },
-  ].map((room, idx) => (
-    <div
-      key={idx}
-       className="rounded-[10px] overflow-hidden relative shadow-md bg-white text-[#264653] p-2 text-center text-sm"
-    >
-      <img
-        src={room.src}
-        alt={room.label}
-        className="w-[203px] h-[199px] object-cover rounded-[4px] mx-auto"
-      />
-      <div className="mt-1 font-semibold text-sm">{room.label}</div>
-      <div className="text-xs">{room.price}</div>
-      <button
-        onClick={() => console.log(`Booking ${room.label}`)}
-        className="mt-1 bg-[#264653] text-white px-3 py-1 rounded-full text-xs hover:bg-[#1e3d4a] transition"
-      >
-        Book now
-      </button>
-    </div>
-  ))}
-</div>
-
-
-
-
-
-        {/* Booking Popup */}
+        {/* Booking Status Popup */}
         <div
           id="booking-popup"
           className={`fixed top-1/2 left-1/2 w-[972px] h-[630px] bg-[#264653E5] rounded-[20px] transform -translate-x-1/2 -translate-y-1/2 z-[2000] p-[40px_20px] text-white text-center ${
@@ -281,24 +292,99 @@ function App() {
         >
           <h2>My bookings</h2>
 
-<div className="mt-6 border border-white">
-  <div className="grid grid-cols-4 text-white font-semibold text-center border-b border-white">
-    <div className="border-r border-white py-2">Type</div>
-    <div className="border-r border-white py-2">Bus detail</div>
-    <div className="border-r border-white py-2">Dates</div>
-    <div className="py-2">Status</div>
-  </div>
-  {/* Empty row layout for future content */}
-  <div className="grid grid-cols-4 text-white text-center h-[200px]">
-    <div className="border-r border-white py-2"></div>
-    <div className="border-r border-white py-2"></div>
-    <div className="border-r border-white py-2"></div>
-    <div className="py-2"></div>
-  </div>
-</div>
+          <div className="mt-6 border border-white">
+            <div className="grid grid-cols-4 text-white font-semibold text-center border-b border-white">
+              <div className="border-r border-white py-2">Type</div>
+              <div className="border-r border-white py-2">Bus detail</div>
+              <div className="border-r border-white py-2">Dates</div>
+              <div className="py-2">Status</div>
+            </div>
 
-          
+            {/* Empty space for future content */}
+            <div className="grid grid-cols-4 text-white text-center h-[200px]">
+              <div className="border-r border-white py-2"></div>
+              <div className="border-r border-white py-2"></div>
+              <div className="border-r border-white py-2"></div>
+              <div className="py-2"></div>
+            </div>
+          </div>
         </div>
+
+        {/* Confirmation Popup */}
+        {confirmationPopupActive && selectedRoom && (
+          <div className="confirmation-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] bg-[#264653E5] text-white rounded-[10px] shadow-xl z-[3000] p-10 font-serif">
+            <h3 className="text-center text-xl tracking-widest border border-white px-6 py-2 rounded mb-8 w-fit mx-auto uppercase">
+              Booking Confirmation
+            </h3>
+
+            <div className="flex justify-between gap-6">
+              {/* Form Section */}
+              <div className="flex flex-col flex-1 gap-4 text-sm">
+                {['Name', 'Number', 'Email', 'No. of room'].map((label, index) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <label className="w-[80px]">{label}</label>
+                    <input
+                      type={label === 'Email' ? 'email' : 'text'}
+                      className="flex-1 border border-white bg-transparent px-3 py-1 rounded outline-none focus:ring-2 focus:ring-white"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Room Details Box */}
+              <div className="w-[200px] border border-white rounded px-4 py-3 text-xs space-y-2 text-center">
+                <div className="font-semibold text-base border-b pb-1 mb-2">Room details</div>
+                <p>{selectedRoom.label}</p>
+                <p>Room type - AC / double bed</p>
+                <p>Room price - {selectedRoom.price}</p>
+              </div>
+            </div>
+
+            {/* Confirm Button */}
+            <div className="mt-10 text-center">
+              <button
+                onClick={() => {
+                  setConfirmationPopupActive(false);
+                  setPaymentPopupActive(true);
+                }}
+                className="border border-white px-8 py-2 rounded uppercase tracking-widest hover:bg-white hover:text-[#4C6663] transition"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Payment QR Popup */}
+        {paymentPopupActive && (
+          <div className="custom-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-[#264653E5] rounded-[12px] p-8 text-white text-center shadow-2xl z-[4000] font-serif space-y-6">
+            <h2 className="border border-white inline-block px-6 py-2 rounded tracking-widest uppercase text-sm">
+              Payment Confirmation
+            </h2>
+            <img src="/images/qr.png" alt="QR Code" className="mx-auto w-[200px] h-[200px] object-contain" />
+            <div className="text-sm leading-relaxed">Payment option <br /> - COA / Online</div>
+            <button
+              onClick={() => {
+                setPaymentPopupActive(false);
+                setFinalPopupActive(true);
+              }}
+              className="mt-2 border border-white px-6 py-2 rounded uppercase tracking-widest hover:bg-white hover:text-[#4c6663] transition"
+            >
+              Check Payment Status
+            </button>
+          </div>
+        )}
+
+        
+       {/* Final Confirmation Popup */}
+{finalPopupActive && (
+  <div className="custom-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#264653E5] text-white rounded-lg shadow-xl z-[5000] p-8 w-[350px] text-center font-serif">
+    <p className="text-lg mb-4">Payment Received </p>
+    <p className="text-lg mb-4">Your booking has been confirmed!</p>
+    <img src="/images/tick.png" alt="Confirmed" className="mx-auto w-[60px] h-[60px]" />
+  </div>
+)}
+
       </main>
     </div>
   );
