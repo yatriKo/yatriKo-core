@@ -18,8 +18,6 @@ import { UpdateHotelDto } from './dto/update-hotel.dto';
 import { FindHotelDto } from './dto/find-all-hotel.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary.service';
-import { AuthGuard } from '../auth/auth.guard';
-import { Roles } from '../roles/roles.decorator';
 
 @Controller('hotel')
 export class HotelController {
@@ -29,14 +27,9 @@ export class HotelController {
   ) {}
 
   @Post()
-  // create() {
-  //   return this.hotelService.createHotelOwner();
-  // }
-  //
   async create(@Body() CreateHotelDto: CreateHotelDto, @Request() req) {
     return this.hotelService.create(CreateHotelDto, req.user.sub);
   }
-  2;
 
   @Post('/hotel-image')
   @UseInterceptors(FileInterceptor('image'))
