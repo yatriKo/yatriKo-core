@@ -19,9 +19,6 @@ function App() {
   const { data: hotelsData, isFetching: isFetchingHotels } =
     useHotelSearch(search);
   const { data: busData, isFetching: isFetchingBus } = useBusSearch(search);
-  console.log(busData);
-  // const busData = { data: [{ name: "bus", image: ["/"] }] };
-  // const isFetchingBus = false;
 
   function handleSearchSubmit(event): void {
     event.preventDefault();

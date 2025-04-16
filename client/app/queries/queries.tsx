@@ -5,9 +5,9 @@ export const useHotelSearch = (search: string | null) => {
   return useQuery({
     queryKey: [search, "hotel"],
     queryFn: async () => {
-      const response = await instance.get(
-        `/hotel${search ? `?search=${search}` : ""}`
-      );
+      const response = await instance.get("/hotel", {
+        params: search ? { search } : {},
+      });
       return response.data;
     },
   });
@@ -17,9 +17,9 @@ export const useBusSearch = (search: string | null) => {
   return useQuery({
     queryKey: [search, "bus"],
     queryFn: async () => {
-      const response = await instance.get(
-        `/bus${search ? `?search=${search}` : ""}`
-      );
+      const response = await instance.get("/bus", {
+        params: search ? { search } : {},
+      });
       return response.data;
     },
   });
