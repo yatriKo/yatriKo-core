@@ -6,12 +6,16 @@ import { PrismaService } from 'apps/prisma/prisma.service';
 
 @Injectable()
 export class HotelService {
+  // declaring PrismaService in constructor so that all function inside can use the PrismaService
   constructor(private readonly prismaService: PrismaService) {}
 
+  //async function to crerate hotel
   async create(createHotelDto: CreateHotelDto, id: number) {
+    // destructuring all the infos
     const { location, name, hotelImage, phoneNumber, roomType } =
       createHotelDto;
 
+    // using prisma to fetch the hotel detail
     const hotel = await this.prismaService.hotel.create({
       data: {
         name,
@@ -34,9 +38,11 @@ export class HotelService {
       },
     });
 
+    //returning the data fetched
     return hotel;
   }
 
+  // Finding all the hotel of the dashboard user who is logged in
   async findAll(findAllHotelDto: FindHotelDto, id: number) {
     const { name, location, price, roomType } = findAllHotelDto;
 
@@ -63,6 +69,7 @@ export class HotelService {
     return hotels;
   }
 
+  // showcasing the particular hotel
   async findOne(id: number) {
     const hotel = await this.prismaService.hotel.findUnique({
       where: {
@@ -80,6 +87,7 @@ export class HotelService {
     return hotel;
   }
 
+  // updating the hotel info
   async update(id: number, updateHotelDto: UpdateHotelDto) {
     const { location, phoneNumber, name, roomType, hotelImage } =
       updateHotelDto;
@@ -110,6 +118,7 @@ export class HotelService {
     return hotel;
   }
 
+  // deletes the hotel
   remove(id: number) {
     return this.prismaService.hotel.delete({
       where: { id },

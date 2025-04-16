@@ -11,6 +11,7 @@ dayjs.extend(customParseFormat);
 export class BookingHotelService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  //async function to crerate book hotel
   async create(createBookingHotelDto: CreateBookingHotelDto, id: number) {
     const { dateFrom, dateTo, roomId } = createBookingHotelDto;
 

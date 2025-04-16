@@ -31,16 +31,13 @@ export class HotelController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
+  // creating the hotel
   @Post()
-  // create() {
-  //   return this.hotelService.createHotelOwner();
-  // }
-  //
   async create(@Body() CreateHotelDto: CreateHotelDto, @Request() req) {
     return this.hotelService.create(CreateHotelDto, req.user.sub);
   }
-  2;
 
+  // posting the hotel image on cloudinary
   @Post('/hotel-image')
   @UseInterceptors(FileInterceptor('image'))
   async uploadHotelImage(@UploadedFile() file: Express.Multer.File) {
@@ -49,6 +46,7 @@ export class HotelController {
     return { url: uploadedImage.secure_url };
   }
 
+  // posting the room image on cloudinary
   @Post('/room-image')
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
@@ -57,21 +55,25 @@ export class HotelController {
     return { url: uploadedImage.secure_url };
   }
 
+  // Fetching all the hotels owned by the user
   @Get()
   findAll(@Query() findAllHotelDto: FindHotelDto, @Request() req) {
     return this.hotelService.findAll(findAllHotelDto, req.user.sub);
   }
 
+  // Fetching the particular hotel owned by the user
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.hotelService.findOne(+id);
   }
 
+  // Updating the hotel detail
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateHotelDto: UpdateHotelDto) {
     return this.hotelService.update(+id, updateHotelDto);
   }
 
+  // Deleting the hotel
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.hotelService.remove(+id);
