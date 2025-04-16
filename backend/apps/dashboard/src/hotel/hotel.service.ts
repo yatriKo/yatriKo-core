@@ -42,6 +42,7 @@ export class HotelService {
     return hotel;
   }
 
+  // Finding all the hotel of the dashboard user who is logged in
   async findAll(findAllHotelDto: FindHotelDto, id: number) {
     const { name, location, price, roomType } = findAllHotelDto;
 
@@ -68,6 +69,7 @@ export class HotelService {
     return hotels;
   }
 
+  // showcasing the particular hotel
   async findOne(id: number) {
     const hotel = await this.prismaService.hotel.findUnique({
       where: {
@@ -85,6 +87,7 @@ export class HotelService {
     return hotel;
   }
 
+  // updating the hotel info
   async update(id: number, updateHotelDto: UpdateHotelDto) {
     const { location, phoneNumber, name, roomType, hotelImage } =
       updateHotelDto;
@@ -115,6 +118,7 @@ export class HotelService {
     return hotel;
   }
 
+  // deletes the hotel
   remove(id: number) {
     return this.prismaService.hotel.delete({
       where: { id },

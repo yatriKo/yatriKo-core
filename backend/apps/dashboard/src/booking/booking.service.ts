@@ -6,10 +6,7 @@ import { PrismaService } from 'apps/prisma/prisma.service';
 @Injectable()
 export class BookingService {
   constructor(private readonly prismaService: PrismaService) {}
-  create(createBookingDto: CreateBookingDto) {
-    return 'This action adds a new booking';
-  }
-
+  //finds all the hotels of the dashboard user's thats been booked
   async findAllHotelBookings(dashboardUserId: number) {
     return await this.prismaService.bookingHotel.findMany({
       where: {
@@ -30,7 +27,7 @@ export class BookingService {
       },
     });
   }
-
+  //finds all the buses of the dashboard user's thats been booked
   async findAllBusBookings(dashboardUserId: number) {
     return await this.prismaService.bookingBus.findMany({
       where: {
@@ -52,20 +49,13 @@ export class BookingService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
-  }
-
-  update(id: number, updateBookingDto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
-  }
-
+  // deletes the hotel thats booked
   remove(id: number) {
     return this.prismaService.bookingHotel.delete({
       where: { id },
     });
   }
-
+  // deletes the bus thats booked
   removeBus(id: number) {
     return this.prismaService.bookingBus.delete({
       where: { id },
