@@ -1,9 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function YatriLandingPage() {
+  const router = useRouter();
+  const [searchVal, setSearchVal] = useState("");
+  const handleChange = (event) => {
+    setSearchVal(event.target.value);
+    console.log(searchVal);
+  };
+
+  function handleSearchSubmit(event): void {
+    event.preventDefault();
+    router.push(`/destinations?search=${searchVal}`);
+  }
+
   return (
     <div
       className="relative bg-cover bg-center bg-no-repeat h-screen flex flex-col"
@@ -27,16 +40,24 @@ export default function YatriLandingPage() {
           Roam. Discover. Repeat - Your Travel, One Platform
         </p>
 
-        <div className="search-bar w-full max-w-xs sm:max-w-xl md:max-w-md px-2 sm:px-4 h-10 sm:h-14 bg-[#FEFAE0]/60 rounded-3xl border-2 border-[#FEFAE0] flex items-center">
-          <input
-            type="text"
-            placeholder="Search your destination"
-            className="flex-grow bg-transparent outline-none text-base sm:text-lg text-black placeholder-black/70"
-          />
-          <button className="search-btn bg-transparent text-black hover:scale-105 transition-transform">
-            <Search />
-          </button>
-        </div>
+        <form className="max-w-xs w-full" onSubmit={handleSearchSubmit}>
+          <div className="search-bar sm:max-w-xl md:max-w-md px-2 sm:px-4 h-10 sm:h-14 bg-[#FEFAE0]/60 rounded-3xl border-2 border-[#FEFAE0] flex items-center">
+            <input
+              type="text"
+              value={searchVal}
+              onChange={handleChange}
+              required
+              placeholder="Search your destination"
+              className="flex-grow bg-transparent outline-none text-base sm:text-lg text-black placeholder-black/70"
+            />
+            <button
+              type="submit"
+              className="search-btn bg-transparent text-black hover:scale-105 transition-transform"
+            >
+              <Search />
+            </button>
+          </div>
+        </form>
       </section>
 
       <style jsx>{`
