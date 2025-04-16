@@ -102,8 +102,5 @@ export const useUploadBusInfo = () => {
       const { data } = await instance.post("/bus", busInfo);
       return data;
     },
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["getHotel"] });
-    // },
   });
 };
