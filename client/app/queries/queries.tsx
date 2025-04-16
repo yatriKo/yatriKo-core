@@ -24,3 +24,13 @@ export const useBusSearch = (search: string | null) => {
     },
   });
 };
+
+export const useGetHotelDetails = (id: number) => {
+  return useQuery({
+    queryKey: [id, "hotel"],
+    queryFn: async () => {
+      const response = await instance.get(`/hotel/5`);
+      return response.data;
+    },
+  });
+};
