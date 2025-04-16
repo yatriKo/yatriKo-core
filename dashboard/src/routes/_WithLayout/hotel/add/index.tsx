@@ -62,6 +62,7 @@ const hotelFormSchema = z.object({
 type HotelFormValues = z.infer<typeof hotelFormSchema>;
 
 function RouteComponent() {
+  // form for all the detail of the hotel
   const form = useForm<HotelFormValues>({
     resolver: zodResolver(hotelFormSchema),
     defaultValues: {
@@ -79,6 +80,7 @@ function RouteComponent() {
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  // function to handle image upload and displaying it
   const handleImageChange = (fileList: FileList | null) => {
     const file = fileList?.[0];
     if (file && file.type.startsWith("image/")) {
@@ -92,15 +94,18 @@ function RouteComponent() {
     }
   };
 
+  // function to post the image and the hotel detail
   const { mutateAsync: uploadHotelImage } = useUploadHotelImage();
   const { mutateAsync: uploadHotel } = useUploadHotelInfo();
 
+  // posting the hotel's detail
   const onSubmit = (data: HotelFormValues) => {
     const formData = new FormData();
     formData.append("image", data.picture[0]);
 
     const rooms = data.rooms;
 
+    // filters the room which have values greater than 0
     const roomType = Object.entries(rooms)
       .filter(([_, value]) => value.numberOfRoom > 0)
       .map(([key, value]) => ({ type: key, ...value }));

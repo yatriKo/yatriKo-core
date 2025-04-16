@@ -74,20 +74,17 @@ function Index() {
         {
           onSuccess: (data) => {
             setToken(data.data);
+            router.navigate({ to: "/dashboard" });
+          },
+          onError: () => {
+            setLoginError(true);
           },
         }
       );
-      router.navigate({ to: "/dashboard" });
     } catch (error) {
       setLoginError(true);
     }
   };
-
-  // useEffect(() => {
-  //   if (token) {
-  //     router.replace("/");
-  //   }
-  // }, [token, router]);
 
   return (
     <div className="flex items-center justify-center flex-col h-screen bg-gradient-to-r from-[#e2e2e2] to-[#c9d6ff]">
@@ -121,7 +118,7 @@ function Index() {
               />
               <input
                 type="text"
-                placeholder="Phone Number"
+                placeholder="Enter Role(HotelOwner or BusOwner)"
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpRole(e.target.value)}
               />

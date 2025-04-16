@@ -26,6 +26,7 @@ export const Route = createFileRoute("/_WithLayout/bus/")({
 });
 
 function RouteComponent() {
+  // function to fetch all the bus
   const { data, isLoading } = useGetBus();
 
   const { mutateAsync, isPending } = useDeleteBus();
@@ -35,6 +36,7 @@ function RouteComponent() {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [busId, setBusId] = useState(0);
 
+  // function to delete the bus
   const deleteHotel = () => {
     mutateAsync(busId, {
       onSuccess: () => {
