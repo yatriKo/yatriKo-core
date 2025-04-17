@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { BusService } from './bus.service';
 
 @Controller('bus')
@@ -16,7 +16,7 @@ export class BusController {
   }
 
   @Get(':id')
-  findOne(@Query(':id') id: number) {
+  findOne(@Param('id') id: number) {
     return this.busService.findOne(id);
   }
 }
