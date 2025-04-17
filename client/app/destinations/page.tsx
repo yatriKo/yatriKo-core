@@ -94,6 +94,7 @@ function App() {
               : hotelsData.data.map((data) => {
                   return (
                     <SearchCard
+                      href={`/hotel-details/${data.id}`}
                       image={data.image[0]}
                       name={data.name}
                       key={data.name}
