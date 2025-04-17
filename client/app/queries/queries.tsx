@@ -96,3 +96,23 @@ export const useBookBus = () => {
     },
   });
 };
+
+export const useGetHotelBookings = () => {
+  return useQuery({
+    queryFn: async () => {
+      const response = await instance.get("/booking-hotel");
+      return response.data;
+    },
+    queryKey: ["hotelBookings"],
+  });
+};
+
+export const useGetBusBookings = () => {
+  return useQuery({
+    queryFn: async () => {
+      const response = await instance.get("/booking-bus");
+      return response.data;
+    },
+    queryKey: ["busBookings"],
+  });
+};

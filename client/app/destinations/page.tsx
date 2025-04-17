@@ -107,6 +107,7 @@ function App() {
                 return (
                   <SearchCard
                     image={data.image[0]}
+                    href={`/bus-details/${data.id}`}
                     name={`${data.from} - ${data.to}`}
                     addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
                     key={data.date}
