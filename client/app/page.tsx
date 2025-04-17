@@ -9,7 +9,6 @@ export default function YatriLandingPage() {
   const [searchVal, setSearchVal] = useState("");
   const handleChange = (event) => {
     setSearchVal(event.target.value);
-    console.log(searchVal);
   };
 
   function handleSearchSubmit(event): void {

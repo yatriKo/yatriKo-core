@@ -18,8 +18,6 @@ function BookingPopup({ onClose }) {
   const { data: busBookings, isFetching: isFetchingBusBookings } =
     useGetBusBookings();
 
-  console.log(busBookings);
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const bookingIcon = document.querySelector(".fa-house");
