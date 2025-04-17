@@ -29,6 +29,13 @@ export class BookingHotelService {
   async findAll(id: number) {
     return await this.prismaService.bookingHotel.findMany({
       where: { userId: id },
+      include: {
+        room: {
+          include: {
+            hotel: true,
+          },
+        },
+      },
     });
   }
 

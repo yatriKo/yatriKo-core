@@ -9,6 +9,13 @@ export class BookingBusService {
   async findAll(id: number) {
     return this.prisma.bookingBus.findMany({
       where: { userId: id },
+      include: {
+        BusSeat: {
+          include: {
+            bus: true,
+          },
+        },
+      },
     });
   }
   async create(createBookingBusDto: CreateBookingBusDto, id: number) {
