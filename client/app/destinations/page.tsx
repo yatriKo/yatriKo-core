@@ -94,6 +94,7 @@ function App() {
               : hotelsData.data.map((data) => {
                   return (
                     <SearchCard
+                      href={`/hotel-details/${data.id}`}
                       image={data.image[0]}
                       name={data.name}
                       key={data.name}
@@ -106,6 +107,7 @@ function App() {
                 return (
                   <SearchCard
                     image={data.image[0]}
+                    href={`/bus-details/${data.id}`}
                     name={`${data.from} - ${data.to}`}
                     addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
                     key={data.date}
