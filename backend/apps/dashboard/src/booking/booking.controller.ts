@@ -18,7 +18,7 @@ export class BookingController {
 
   // getting all the info about the booking of the hotel
   @Get('/hotel')
-  findAll(@Request() req) {
+  findAllHotelBookings(@Request() req) {
     return this.bookingService.findAllHotelBookings(req.user.sub);
   }
 
@@ -30,13 +30,13 @@ export class BookingController {
 
   // deleting the booking
   @Delete('/hotel:id')
-  remove(@Param('id') id: string) {
+  removeHotelBooking(@Param('id') id: string) {
     return this.bookingService.remove(+id);
   }
 
   // deleting the booking
   @Delete('/bus:id')
-  removeBus(@Param('id') id: string) {
+  removeBusBooking(@Param('id') id: string) {
     return this.bookingService.removeBus(+id);
   }
 }

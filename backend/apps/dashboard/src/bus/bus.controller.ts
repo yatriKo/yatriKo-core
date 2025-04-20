@@ -17,6 +17,9 @@ import { CreateBusDto } from './dto/create-bus.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary.service';
 import { FindBusDto } from './dto/find-all-bus.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { RolesGuard } from '../roles/roles.guard';
+import { Roles } from '../roles/roles.decorator';
 
 @Controller('bus')
 @UseGuards(AuthGuard, RolesGuard)

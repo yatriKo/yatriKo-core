@@ -8,14 +8,12 @@ import { Public } from '../roles/public.decorator';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   login(@Body() logInObject: LogInDto) {
     return this.authService.login(logInObject);
   }
 
-  @Public()
   @HttpCode(HttpStatus.CREATED)
   @Post('sign-up')
   signUp(@Body() signUpObject: CreateUserDto) {
