@@ -17,12 +17,12 @@ import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
+    AuthModule,
     HotelModule,
     PrismaModule,
     BookingHotelModule,
     MulterModule,
     UsersModule,
-    AuthModule,
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     BusModule,
     BookingModule,
