@@ -205,9 +205,15 @@ export default function Dashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 bg-white">
-        {activeTab === 'dashboard' ? renderDashboard() : renderUserManagement()}
-      </main>
+      <main className="flex-1 p-8 bg-white overflow-hidden">
+  {activeTab === 'dashboard' && (
+    <div key="dashboard">{renderDashboard()}</div>
+  )}
+  {activeTab === 'user' && (
+    <div key="user">{renderUserManagement()}</div>
+  )}
+</main>
+
     </div>
   );
 }
