@@ -29,13 +29,13 @@ export class BookingController {
   }
 
   // deleting the booking
-  @Delete('/hotel:id')
+  @Delete('/hotel/:id')
   removeHotelBooking(@Param('id') id: string) {
     return this.bookingService.remove(+id);
   }
 
   // deleting the booking
-  @Delete('/bus:id')
+  @Delete('/bus/:id')
   removeBusBooking(@Param('id') id: string) {
     return this.bookingService.removeBus(+id);
   }
