@@ -14,6 +14,7 @@ import config from '../../config/config';
 import { AuthGuard } from './auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { BookingModule } from './booking/booking.module';
+import { BusOwnersModule } from './bus-owners/bus-owners.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { BookingModule } from './booking/booking.module';
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     BusModule,
     BookingModule,
+    BusOwnersModule,
   ],
   controllers: [DashboardController],
   providers: [
