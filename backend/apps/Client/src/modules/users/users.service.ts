@@ -7,7 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOneUser(email: string): Promise<User | null> {
+  async findOne(email: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: { email: email },
     });
