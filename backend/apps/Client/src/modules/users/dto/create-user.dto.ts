@@ -1,10 +1,12 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsNumberString,
   IsString,
   MinLength,
 } from 'class-validator';
+import { ClientRole } from '@prisma/client';
 
 export class CreateUserDto {
   @MinLength(2, { message: 'Name must be atleast 2 characters' })
@@ -22,4 +24,10 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6, { message: 'Phone number must be at least 6 characters' })
   password: string;
+
+  @IsString()
+  @IsEnum(ClientRole, {
+    message: 'Role should be one of "User" or "TravelAgent',
+  })
+  role: ClientRole;
 }

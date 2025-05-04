@@ -19,6 +19,11 @@ enum Role {
   BusOwner
 }
 
+enum ClientRole {
+  User
+  TravelAgent
+}
+
 model dashboardUser {
   id       Int    @id @default(autoincrement())
   name     String
@@ -83,23 +88,7 @@ model User {
   email       String @unique
   phoneNumber String
   password    String
-
-  busBookings   BookingBus[]
-  hotelBookings BookingHotel[]
-}
-
-model Admin {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-}
-
-model TravelAgent {
-  id          Int    @id @default(autoincrement())
-  name        String
-  phoneNumber String
-  password    String
+  role        ClientRole @default(User)
 
   busBookings   BookingBus[]
   hotelBookings BookingHotel[]
@@ -108,14 +97,14 @@ model TravelAgent {
 model BookingBus {
   id              Int      @id @default(autoincrement())
   userId          Int?
-  travelerAgentId Int?
   busSeatId       Int
   date            DateTime
   paymentStatus   Boolean
+  clientName      String?
+  clientEmail     String?
 
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   BusSeat       BusSeat      @relation(fields: [busSeatId], references: [id], onDelete: Cascade)
-  travelerAgent TravelAgent? @relation(fields: [travelerAgentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, busSeatId, date])
 }
@@ -124,14 +113,14 @@ model BookingHotel {
   id              Int      @id @default(autoincrement())
   roomId          Int
   userId          Int?
-  travelerAgentId Int?
   dateFrom        DateTime
   dateTo          DateTime
   paymentStatus   Boolean
+  clientName      String?
+  clientEmail     String?
 
   room          Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  travelerAgent TravelAgent? @relation(fields: [travelerAgentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roomId, dateFrom, dateTo])
 }

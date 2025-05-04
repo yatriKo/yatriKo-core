@@ -12,7 +12,6 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { instanceToPlain } from 'class-transformer';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { UserLogInDto } from './dto/login.dto';
-import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +38,7 @@ export class AuthService {
     try {
       const token = await this.jwtService.signAsync(payload);
       const accessToken = 'Bearer ' + token;
-      return { accessToken, expiresIn: '7d' };
+      return { accessToken, expiresIn: '7d', role: user.role };
     } catch (error) {
       throw new Error('JWT ERROR: ' + error);
     }
