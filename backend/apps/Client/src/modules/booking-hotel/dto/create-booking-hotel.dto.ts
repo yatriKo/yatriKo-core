@@ -10,4 +10,7 @@ export class CreateBookingHotelDto {
   @IsNotEmpty()
   @IsInt()
   roomId: number;
+
+  clientEmail?: string;
+  clientName?: string;
 }
