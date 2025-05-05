@@ -23,7 +23,6 @@ export class BookingService {
           },
         },
         user: true,
-        travelerAgent: true,
       },
     });
   }
@@ -44,7 +43,6 @@ export class BookingService {
           },
         },
         user: true,
-        travelerAgent: true,
       },
     });
   }

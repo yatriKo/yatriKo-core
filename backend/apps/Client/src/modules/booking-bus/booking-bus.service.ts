@@ -19,14 +19,27 @@ export class BookingBusService {
     });
   }
   async create(createBookingBusDto: CreateBookingBusDto, id: number) {
-    const { busSeatId } = createBookingBusDto;
+    const { busSeatId, clientName, clientEmail } = createBookingBusDto;
     const bus = await this.prisma.busSeat.findUnique({
       where: { id: busSeatId },
       select: { bus: true },
     });
     if (!bus) throw new BadRequestException('Bus not found');
     return await this.prisma.bookingBus.create({
-      data: { busSeatId, paymentStatus: true, userId: id, date: bus.bus.date },
+      data: {
+        busSeatId,
+        clientName,
+        clientEmail,
+        paymentStatus: true,
+        userId: id,
+        date: bus.bus.date,
+      },
+    });
+  }
+
+  async remove(id: number) {
+    return await this.prisma.bookingBus.delete({
+      where: { id },
     });
   }
 }

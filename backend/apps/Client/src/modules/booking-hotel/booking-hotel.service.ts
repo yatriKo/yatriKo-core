@@ -13,7 +13,8 @@ export class BookingHotelService {
 
   //async function to crerate book hotel
   async create(createBookingHotelDto: CreateBookingHotelDto, id: number) {
-    const { dateFrom, dateTo, roomId } = createBookingHotelDto;
+    const { dateFrom, dateTo, roomId, clientEmail, clientName } =
+      createBookingHotelDto;
 
     return await this.prismaService.bookingHotel.create({
       data: {
@@ -22,6 +23,8 @@ export class BookingHotelService {
         dateTo: dayjs(dateTo, 'DD/MM/YYYY').toDate(),
         paymentStatus: true,
         roomId,
+        clientEmail,
+        clientName,
       },
     });
   }
@@ -47,7 +50,9 @@ export class BookingHotelService {
     return `This action updates a #${id} bookingHotel`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bookingHotel`;
+  async remove(id: number) {
+    return await this.prismaService.bookingHotel.delete({
+      where: { id },
+    });
   }
 }
