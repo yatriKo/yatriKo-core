@@ -50,7 +50,9 @@ export class BookingHotelService {
     return `This action updates a #${id} bookingHotel`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bookingHotel`;
+  async remove(id: number) {
+    return await this.prismaService.bookingHotel.delete({
+      where: { id },
+    });
   }
 }

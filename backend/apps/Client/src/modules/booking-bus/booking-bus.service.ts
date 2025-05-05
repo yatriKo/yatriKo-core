@@ -36,4 +36,10 @@ export class BookingBusService {
       },
     });
   }
+
+  async remove(id: number) {
+    return await this.prisma.bookingBus.delete({
+      where: { id },
+    });
+  }
 }
