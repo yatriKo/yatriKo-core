@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@radix-ui/react-dropdown-menu";
+} from "../components/ui/dropdown-menu";
 import { X, Menu, LogIn, CircleUserRound } from "lucide-react";
 import { useState, useEffect } from "react";
 import BookingPopup from "./booking-popup";
@@ -152,7 +152,7 @@ export default function NavBar() {
                 My bookings
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="p-2 cursor-pointer text-red-600"
+                className="p-2 cursor-pointer"
                 onClick={handleLogout}
               >
                 Logout
