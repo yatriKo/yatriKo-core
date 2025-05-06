@@ -264,7 +264,7 @@ function App() {
       <div className="w-[250px] border border-white rounded px-4 py-3 text-xs space-y-2 text-center">
         <div className="font-semibold text-base border-b pb-1 mb-2">Room details</div>
         <p>{selectedRoom.label}</p>
-        <p>Room type - AC / double bed</p>
+        <p>Room type - AC / Double Bed</p>
         <p>Room price - {selectedRoom.price}</p>
       </div>
     </div>
