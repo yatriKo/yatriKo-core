@@ -5,6 +5,13 @@ import AxiosInstance from "../../utils/axiosInstance";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/auth-context";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../components/ui/select";
 
 const userLogin = async (email: string, password: string) => {
   const response = await AxiosInstance.post("/auth/login", { email, password });
@@ -15,20 +22,22 @@ const userSignUp = async (
   name: string,
   email: string,
   phoneNumber: string,
-  password: string
+  password: string,
+  role: string
 ) => {
   const response = await AxiosInstance.post("/auth/sign-up", {
     name,
     email,
     phoneNumber,
     password,
+    role,
   });
   return response;
 };
 
 const YatriLoginPage = () => {
   const router = useRouter();
-  const { token, setToken } = useAuth();
+  const { setToken } = useAuth();
   const [isActive, setIsActive] = useState(false);
 
   const [loginEmail, setLoginEmail] = useState("");
@@ -39,6 +48,7 @@ const YatriLoginPage = () => {
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPhone, setSignUpPhone] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
+  const [role, setRole] = useState("");
 
   const handleRegisterClick = () => {
     setIsActive(true);
@@ -56,7 +66,8 @@ const YatriLoginPage = () => {
         signUpName,
         signUpEmail,
         signUpPhone,
-        signUpPassword
+        signUpPassword,
+        role
       );
       toast(`User ${data.data.name} created successfully!`);
       setIsActive(false);
@@ -67,12 +78,14 @@ const YatriLoginPage = () => {
     }
   };
 
+  console.log(role);
+
   const handleLoginSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       setLoginError(false);
       const data = await userLogin(loginEmail, loginPass);
-      setToken(data.accessToken);
+      setToken(data);
       router.push("/");
     } catch (error) {
       setLoginError(true);
@@ -109,25 +122,38 @@ const YatriLoginPage = () => {
                 placeholder="Name"
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpName(e.target.value)}
+                value={signUpName}
               />
               <input
                 type="email"
                 placeholder="Email"
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpEmail(e.target.value)}
+                value={signUpEmail}
               />
               <input
                 type="text"
                 placeholder="Phone Number"
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpPhone(e.target.value)}
+                value={signUpPhone}
               />
               <input
                 type="password"
                 placeholder="Password"
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpPassword(e.target.value)}
+                value={signUpPassword}
               />
+              <Select onValueChange={(value) => setRole(value)}>
+                <SelectTrigger className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none">
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="User">Traveler</SelectItem>
+                  <SelectItem value="TravelAgent">Travel Agent</SelectItem>
+                </SelectContent>
+              </Select>
 
               <button className="bg-[#264653] text-white text-xs py-2 px-10 border border-transparent rounded-lg font-semibold tracking-wider uppercase mt-2 cursor-pointer">
                 Sign Up

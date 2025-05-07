@@ -13,7 +13,8 @@ instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = token;
+      const parsedToken = JSON.parse(token);
+      config.headers.Authorization = parsedToken?.accessToken;
     }
     return config;
   },
