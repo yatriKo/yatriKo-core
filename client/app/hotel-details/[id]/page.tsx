@@ -163,9 +163,9 @@ function HotelDetails() {
 
             <div className="flex justify-center gap-6">
               {/* Form Section */}
-              {/* <div className="flex flex-col flex-1 gap-4 text-sm">
-                {["Name", "Number", "Email", "No. of room"].map(
-                  (label, index) => (
+              {token?.role === "TravelAgent" && (
+                <div className="flex flex-col flex-1 gap-4 text-sm">
+                  {["Client's Name", "Email"].map((label, index) => (
                     <div key={index} className="flex items-center gap-4">
                       <label className="w-[80px]">{label}</label>
                       <input
@@ -173,9 +173,9 @@ function HotelDetails() {
                         className="flex-1 border border-white bg-transparent px-3 py-1 rounded outline-none focus:ring-2 focus:ring-white"
                       />
                     </div>
-                  )
-                )}
-              </div> */}
+                  ))}
+                </div>
+              )}
 
               {/* Room Details Box */}
               <div className="w-[200px] border border-white rounded px-4 py-3 text-xs space-y-2 text-center">
