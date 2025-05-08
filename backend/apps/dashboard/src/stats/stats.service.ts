@@ -8,13 +8,13 @@ export class StatsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async countUserData(): Promise<UserStatsDto> {
-    const [travelerCount, travelAgentCount, busOwnerCount, HotelOwnerCount] =
+    const [travelerCount, travelAgentCount, busOwnerCount, hotelOwnerCount] =
       await Promise.all([
         this.prisma.user.count({ where: { role: ClientRole.User } }),
         this.prisma.user.count({ where: { role: ClientRole.TravelAgent } }),
         this.prisma.dashboardUser.count({ where: { role: Role.BusOwner } }),
         this.prisma.dashboardUser.count({ where: { role: Role.HotelOwner } }),
       ]);
-    return { travelerCount, travelAgentCount, busOwnerCount, HotelOwnerCount };
+    return { travelerCount, travelAgentCount, busOwnerCount, hotelOwnerCount };
   }
 }
