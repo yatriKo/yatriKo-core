@@ -60,6 +60,8 @@ export const useBookHotel = () => {
         roomId: data.roomId,
         dateFrom: checkIn,
         dateTo: checkOut,
+        clientEmail: data.email ?? undefined,
+        clientName: data.clientName ?? undefined,
       });
       return response;
     },
