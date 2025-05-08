@@ -2,6 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../../../lib/axios";
 import { AxiosResponse } from "axios";
 
+export type stats = {
+  travelerCount: number;
+  travelAgentCount: number;
+  busOwnerCount: number;
+  hotelOwnerCount: number;
+};
+
 export type bookings = Array<{
   id: number;
   roomId: number;
@@ -108,6 +115,17 @@ export const useDeleteBookingBus = () => {
     mutationFn: async (id: number) => {
       await instance.delete(`/booking/bus/${id}`);
     },
+  });
+  return data;
+};
+
+// get all stats for admin
+export const useGetStats = () => {
+  const data = useQuery({
+    queryFn: async () => {
+      return await instance.get<stats>("/stats");
+    },
+    queryKey: ["stats"],
   });
   return data;
 };

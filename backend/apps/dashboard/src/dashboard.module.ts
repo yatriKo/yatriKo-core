@@ -16,6 +16,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { BookingModule } from './booking/booking.module';
 import { BusOwnersModule } from './bus-owners/bus-owners.module';
 import { HotelOwnerModule } from './hotel-owner/hotel-owner.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { HotelOwnerModule } from './hotel-owner/hotel-owner.module';
     BookingModule,
     BusOwnersModule,
     HotelOwnerModule,
+    StatsModule,
   ],
   controllers: [DashboardController],
   providers: [
