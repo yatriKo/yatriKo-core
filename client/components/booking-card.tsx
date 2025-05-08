@@ -21,7 +21,7 @@ export default function BookingCard({
         />
       )}
       <div className="mt-1 font-semibold text-sm">{label}</div>
-      <div className="text-xs">{price}</div>
+      <div className="text-xs">Rs. {price}</div>
       <button
         onClick={() => onBookingClick(id, label, price)}
         className="mt-1 bg-[#264653] text-white px-3 py-1 rounded-full text-xs hover:bg-[#1e3d4a] transition"

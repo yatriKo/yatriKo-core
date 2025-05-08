@@ -26,8 +26,6 @@ function HotelDetails() {
     price: string;
   } | null>(null);
 
-  console.log(selectedRoom);
-
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const [paymentPopupActive, setPaymentPopupActive] = useState(false);
@@ -56,13 +54,24 @@ function HotelDetails() {
     }
   }
 
-  const handelBooking = () => {
+  const handleBooking = () => {
     mutate({
       roomId: selectedRoom?.id,
       from: checkInDate,
       to: checkOutDate,
       clientName,
       email,
+    });
+  };
+
+  const handleBookingCashOnDelivery = () => {
+    mutate({
+      roomId: selectedRoom?.id,
+      from: checkInDate,
+      to: checkOutDate,
+      clientName,
+      email,
+      paymentStatus: false,
     });
   };
 
@@ -233,7 +242,8 @@ function HotelDetails() {
             close={() => setPaymentPopupActive(false)}
             hotelName={hotelData.name}
             hotelPrice={selectedRoom?.price}
-            handleBooking={handelBooking}
+            handleBooking={handleBooking}
+            handleBookingCashOnDelivery={handleBookingCashOnDelivery}
           />
         )}
       </main>

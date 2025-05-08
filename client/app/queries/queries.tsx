@@ -62,6 +62,7 @@ export const useBookHotel = () => {
         dateTo: checkOut,
         clientEmail: data.email ?? undefined,
         clientName: data.clientName ?? undefined,
+        paymentStatus: data.paymentStatus ?? true,
       });
       return response;
     },
@@ -90,9 +91,12 @@ export const useGetSeats = (id: number) => {
 
 export const useBookBus = () => {
   return useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (data: any) => {
       const response = await instance.post("/booking-bus", {
-        busSeatId: id,
+        busSeatId: data.id,
+        clientEmail: data.email ?? undefined,
+        clientName: data.clientName ?? undefined,
+        paymentStatus: data.paymentStatus ?? true,
       });
       return response;
     },

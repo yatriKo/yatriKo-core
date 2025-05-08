@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 export const PaymentModal = ({
   close,
   handleBooking,
-  handleBookingCashOnDelivery,
+  handelBookingCashOnDelivery,
   hotelName,
   hotelPrice,
   busPrice,
@@ -16,7 +16,7 @@ export const PaymentModal = ({
 }: {
   hotelName?: string;
   close: (value: SetStateAction<boolean>) => void;
-  handleBookingCashOnDelivery: () => void;
+  handelBookingCashOnDelivery: () => void;
   handleBooking: () => void;
   hotelPrice?: string;
   busPrice?: string;
@@ -166,7 +166,7 @@ export const PaymentModal = ({
           </p>
           <button
             onClick={() => {
-              handleBookingCashOnDelivery(), setActiveStep("success");
+              handelBookingCashOnDelivery(), setActiveStep("success");
             }}
             className="w-full bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded"
           >

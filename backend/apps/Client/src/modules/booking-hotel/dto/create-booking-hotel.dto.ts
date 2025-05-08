@@ -25,4 +25,7 @@ export class CreateBookingHotelDto {
   @IsOptional()
   @IsString()
   clientName?: string;
+
+  @IsOptional()
+  paymentStatus?: boolean;
 }
