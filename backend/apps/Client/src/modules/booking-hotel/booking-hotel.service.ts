@@ -13,7 +13,7 @@ export class BookingHotelService {
 
   //async function to crerate book hotel
   async create(createBookingHotelDto: CreateBookingHotelDto, id: number) {
-    const { dateFrom, dateTo, roomId, clientEmail, clientName } =
+    const { dateFrom, dateTo, roomId, clientEmail, clientName, paymentStatus } =
       createBookingHotelDto;
 
     return await this.prismaService.bookingHotel.create({
@@ -21,7 +21,7 @@ export class BookingHotelService {
         userId: id,
         dateFrom: dayjs(dateFrom, 'DD/MM/YYYY').toDate(),
         dateTo: dayjs(dateTo, 'DD/MM/YYYY').toDate(),
-        paymentStatus: true,
+        paymentStatus: paymentStatus ?? true,
         roomId,
         clientEmail,
         clientName,

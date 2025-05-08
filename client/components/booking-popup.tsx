@@ -11,12 +11,15 @@ import {
 } from "@/components/ui/table";
 import { useGetBusBookings, useGetHotelBookings } from "@/app/queries/queries";
 import dayjs from "dayjs";
+import { useAuth } from "@/app/context/auth-context";
 
 function BookingPopup({ onClose }) {
   const { data: hotelBookings, isFetching: isFetchingHotelBookings } =
     useGetHotelBookings();
   const { data: busBookings, isFetching: isFetchingBusBookings } =
     useGetBusBookings();
+
+  const { token } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -60,32 +63,68 @@ function BookingPopup({ onClose }) {
             <h3>Hotel bookings</h3>
             <Table className="mt-4 border border-white">
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px] text-white">Id</TableHead>
-                  <TableHead className="text-white">Hotel</TableHead>
-                  <TableHead className="text-white">Room type</TableHead>
-                  <TableHead className="text-white">Date</TableHead>
-                  <TableHead className="text-white">Amount</TableHead>
-                  <TableHead className="text-white">Payment Status</TableHead>
-                </TableRow>
+                {token?.role === "TravelAgent" ? (
+                  <TableRow>
+                    <TableHead className="w-[100px] text-white">Id</TableHead>
+                    <TableHead className="text-white">Clients name</TableHead>
+                    <TableHead className="text-white">Hotel name</TableHead>
+                    <TableHead className="text-white">Room Type</TableHead>
+                    <TableHead className="text-white">Date</TableHead>
+                    <TableHead className="text-white">Amount</TableHead>
+                    <TableHead className="text-white">Payment Status</TableHead>
+                  </TableRow>
+                ) : (
+                  <TableRow>
+                    <TableHead className="w-[100px] text-white">Id</TableHead>
+                    <TableHead className="text-white">Hotel</TableHead>
+                    <TableHead className="text-white">Room type</TableHead>
+                    <TableHead className="text-white">Date</TableHead>
+                    <TableHead className="text-white">Amount</TableHead>
+                    <TableHead className="text-white">Payment Status</TableHead>
+                  </TableRow>
+                )}
               </TableHeader>
               <TableBody>
-                {hotelBookings.map((booking) => (
-                  <TableRow key={booking.id}>
-                    <TableCell className="font-medium">{booking.id}</TableCell>
-                    <TableCell>{`${booking.room.hotel.name}, ${booking.room.hotel.location}`}</TableCell>
-                    <TableCell>{booking.room.roomType}</TableCell>
-                    <TableCell>{`${dayjs(booking.dateFrom).format(
-                      "D MMM YYYY"
-                    )} - ${dayjs(booking.dateTo).format(
-                      "D MMM YYYY"
-                    )}`}</TableCell>
-                    <TableCell>{`Rs. ${booking.room.price}`}</TableCell>
-                    <TableCell>
-                      {booking.paymentStatus ? "Paid" : "Unpaid"}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {hotelBookings.map((booking) =>
+                  token?.role === "TravelAgent" ? (
+                    <TableRow key={booking.id}>
+                      <TableCell className="font-medium">
+                        {booking.id}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {booking.clientName}
+                      </TableCell>
+                      <TableCell>{`${booking.room.hotel.name}, ${booking.room.hotel.location}`}</TableCell>
+                      <TableCell>{booking.room.roomType}</TableCell>
+                      <TableCell>{`${dayjs(booking.dateFrom).format(
+                        "D MMM YYYY"
+                      )} - ${dayjs(booking.dateTo).format(
+                        "D MMM YYYY"
+                      )}`}</TableCell>
+                      <TableCell>{`Rs. ${booking.room.price}`}</TableCell>
+                      <TableCell>
+                        {booking.paymentStatus ? "Paid" : "Unpaid"}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <TableRow key={booking.id}>
+                      <TableCell className="font-medium">
+                        {booking.id}
+                      </TableCell>
+                      <TableCell>{`${booking.room.hotel.name}, ${booking.room.hotel.location}`}</TableCell>
+                      <TableCell>{booking.room.roomType}</TableCell>
+                      <TableCell>{`${dayjs(booking.dateFrom).format(
+                        "D MMM YYYY"
+                      )} - ${dayjs(booking.dateTo).format(
+                        "D MMM YYYY"
+                      )}`}</TableCell>
+                      <TableCell>{`Rs. ${booking.room.price}`}</TableCell>
+                      <TableCell>
+                        {booking.paymentStatus ? "Paid" : "Unpaid"}
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </div>
@@ -93,32 +132,66 @@ function BookingPopup({ onClose }) {
             <h3>Bus bookings</h3>
             <Table className="mt-4 border border-white">
               <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px] text-white">Id</TableHead>
-                  <TableHead className="text-white">Bus number</TableHead>
-                  <TableHead className="text-white">Trip</TableHead>
-                  <TableHead className="text-white">Seat type</TableHead>
-                  <TableHead className="text-white">Date</TableHead>
-                  <TableHead className="text-white">Amount</TableHead>
-                  <TableHead className="text-white">Payment Status</TableHead>
-                </TableRow>
+                {token?.role === "TravelAgent" ? (
+                  <TableRow>
+                    <TableHead className="w-[100px] text-white">Id</TableHead>
+                    <TableHead className="text-white">Clients name</TableHead>
+                    <TableHead className="text-white">Bus number</TableHead>
+                    <TableHead className="text-white">Trip</TableHead>
+                    <TableHead className="text-white">Seat type</TableHead>
+                    <TableHead className="text-white">Date</TableHead>
+                    <TableHead className="text-white">Amount</TableHead>
+                    <TableHead className="text-white">Payment Status</TableHead>
+                  </TableRow>
+                ) : (
+                  <TableRow>
+                    <TableHead className="w-[100px] text-white">Id</TableHead>
+                    <TableHead className="text-white">Bus number</TableHead>
+                    <TableHead className="text-white">Trip</TableHead>
+                    <TableHead className="text-white">Seat type</TableHead>
+                    <TableHead className="text-white">Date</TableHead>
+                    <TableHead className="text-white">Amount</TableHead>
+                    <TableHead className="text-white">Payment Status</TableHead>
+                  </TableRow>
+                )}
               </TableHeader>
               <TableBody>
-                {busBookings.map((booking) => (
-                  <TableRow key={booking.id}>
-                    <TableCell className="font-medium">{booking.id}</TableCell>
-                    <TableCell>{`${booking.BusSeat.bus.busNumber}`}</TableCell>
-                    <TableCell>{`${booking.BusSeat.bus.from} - ${booking.BusSeat.bus.to}`}</TableCell>
-                    <TableCell>{booking.BusSeat.seatType}</TableCell>
-                    <TableCell>
-                      {dayjs(booking.date).format("D MMM YYYY, H:mm")}
-                    </TableCell>
-                    <TableCell>{`Rs. ${booking.BusSeat.price}`}</TableCell>
-                    <TableCell>
-                      {booking.paymentStatus ? "Paid" : "Unpaid"}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {busBookings.map((booking) =>
+                  token?.role === "TravelAgent" ? (
+                    <TableRow key={booking.id}>
+                      <TableCell className="font-medium">
+                        {booking.id}
+                      </TableCell>
+                      <TableCell>{booking.clientName}</TableCell>
+                      <TableCell>{`${booking.BusSeat.bus.busNumber}`}</TableCell>
+                      <TableCell>{`${booking.BusSeat.bus.from} - ${booking.BusSeat.bus.to}`}</TableCell>
+                      <TableCell>{booking.BusSeat.seatType}</TableCell>
+                      <TableCell>
+                        {dayjs(booking.date).format("D MMM YYYY, H:mm")}
+                      </TableCell>
+                      <TableCell>{`Rs. ${booking.BusSeat.price}`}</TableCell>
+                      <TableCell>
+                        {booking.paymentStatus ? "Paid" : "Unpaid"}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <TableRow key={booking.id}>
+                      <TableCell className="font-medium">
+                        {booking.id}
+                      </TableCell>
+                      <TableCell>{`${booking.BusSeat.bus.busNumber}`}</TableCell>
+                      <TableCell>{`${booking.BusSeat.bus.from} - ${booking.BusSeat.bus.to}`}</TableCell>
+                      <TableCell>{booking.BusSeat.seatType}</TableCell>
+                      <TableCell>
+                        {dayjs(booking.date).format("D MMM YYYY, H:mm")}
+                      </TableCell>
+                      <TableCell>{`Rs. ${booking.BusSeat.price}`}</TableCell>
+                      <TableCell>
+                        {booking.paymentStatus ? "Paid" : "Unpaid"}
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </div>

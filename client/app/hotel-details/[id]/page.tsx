@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { PaymentModal } from "./components/PaymentModal";
 
 function HotelDetails() {
   const { id } = useParams();
@@ -28,9 +29,10 @@ function HotelDetails() {
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const [paymentPopupActive, setPaymentPopupActive] = useState(false);
-  const [finalPopupActive, setFinalPopupActive] = useState(false);
+  const [clientName, setClientName] = useState("");
+  const [email, setEmail] = useState("");
 
-  const bookingMutation = useBookHotel();
+  const { mutate } = useBookHotel();
 
   function handleDateChange(from: Date, to: Date) {
     setCheckInDate(from);
@@ -51,6 +53,27 @@ function HotelDetails() {
       setConfirmationPopupActive(true);
     }
   }
+
+  const handleBooking = () => {
+    mutate({
+      roomId: selectedRoom?.id,
+      from: checkInDate,
+      to: checkOutDate,
+      clientName,
+      email,
+    });
+  };
+
+  const handleBookingCashOnDelivery = () => {
+    mutate({
+      roomId: selectedRoom?.id,
+      from: checkInDate,
+      to: checkOutDate,
+      clientName,
+      email,
+      paymentStatus: false,
+    });
+  };
 
   const { data: roomsData } = useGetRooms(+id, checkInDate, checkOutDate);
 
@@ -144,7 +167,7 @@ function HotelDetails() {
                 key={room.id}
                 id={room.id}
                 label={room.roomType}
-                price={"Rs. " + room.price}
+                price={room.price}
                 image={room.image[0]}
                 onBookingClick={onBookingClick}
               />
@@ -162,20 +185,25 @@ function HotelDetails() {
             </h3>
 
             <div className="flex justify-center gap-6">
-              {/* Form Section */}
-              {/* <div className="flex flex-col flex-1 gap-4 text-sm">
-                {["Name", "Number", "Email", "No. of room"].map(
-                  (label, index) => (
+              {token?.role === "TravelAgent" && (
+                <div className="flex flex-col flex-1 gap-4 text-sm">
+                  {["Client's Name", "Email"].map((label, index) => (
                     <div key={index} className="flex items-center gap-4">
                       <label className="w-[80px]">{label}</label>
                       <input
                         type={label === "Email" ? "email" : "text"}
                         className="flex-1 border border-white bg-transparent px-3 py-1 rounded outline-none focus:ring-2 focus:ring-white"
+                        value={label === "Email" ? email : clientName}
+                        onChange={(e) =>
+                          label === "Email"
+                            ? setEmail(e.target.value)
+                            : setClientName(e.target.value)
+                        }
                       />
                     </div>
-                  )
-                )}
-              </div> */}
+                  ))}
+                </div>
+              )}
 
               {/* Room Details Box */}
               <div className="w-[200px] border border-white rounded px-4 py-3 text-xs space-y-2 text-center">
@@ -210,55 +238,13 @@ function HotelDetails() {
 
         {/* Payment QR Popup */}
         {paymentPopupActive && (
-          <div className="custom-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] bg-[#264653] rounded-[12px] p-8 text-white text-center shadow-2xl z-[4000] font-serif space-y-6">
-            <h2 className="border border-white inline-block px-6 py-2 rounded tracking-widest uppercase text-sm">
-              Payment Confirmation
-            </h2>
-            <img
-              src="/images/qr.png"
-              alt="QR Code"
-              className="mx-auto w-[200px] h-[200px] object-contain"
-            />
-            <div className="text-sm leading-relaxed">
-              Payment option <br /> - Online QR
-            </div>
-            <button
-              onClick={() => {
-                bookingMutation.mutate(
-                  {
-                    roomId: selectedRoom?.id,
-                    from: checkInDate,
-                    to: checkOutDate,
-                  },
-                  {
-                    onSuccess: () => {
-                      setPaymentPopupActive(false);
-                      setFinalPopupActive(true);
-                    },
-                    onError: (error) => {
-                      console.log(error);
-                    },
-                  }
-                );
-              }}
-              className="mt-2 border border-white px-6 py-2 rounded uppercase tracking-widest hover:bg-white hover:text-[#4c6663] transition"
-            >
-              Confirm Payment
-            </button>
-          </div>
-        )}
-
-        {/* Final Confirmation Popup */}
-        {finalPopupActive && (
-          <div className="custom-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#264653] text-white rounded-lg shadow-xl z-[5000] p-8 w-[350px] text-center font-serif">
-            <p className="text-lg mb-4">Payment Received </p>
-            <p className="text-lg mb-4">Your booking has been confirmed!</p>
-            <img
-              src="/images/tick.png"
-              alt="Confirmed"
-              className="mx-auto w-[60px] h-[60px]"
-            />
-          </div>
+          <PaymentModal
+            close={() => setPaymentPopupActive(false)}
+            hotelName={hotelData.name}
+            hotelPrice={selectedRoom?.price}
+            handleBooking={handleBooking}
+            handleBookingCashOnDelivery={handleBookingCashOnDelivery}
+          />
         )}
       </main>
     </div>

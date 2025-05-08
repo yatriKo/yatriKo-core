@@ -19,7 +19,8 @@ export class BookingBusService {
     });
   }
   async create(createBookingBusDto: CreateBookingBusDto, id: number) {
-    const { busSeatId, clientName, clientEmail } = createBookingBusDto;
+    const { busSeatId, clientName, clientEmail, paymentStatus } =
+      createBookingBusDto;
     const bus = await this.prisma.busSeat.findUnique({
       where: { id: busSeatId },
       select: { bus: true },
@@ -30,7 +31,7 @@ export class BookingBusService {
         busSeatId,
         clientName,
         clientEmail,
-        paymentStatus: true,
+        paymentStatus: paymentStatus ?? true,
         userId: id,
         date: bus.bus.date,
       },

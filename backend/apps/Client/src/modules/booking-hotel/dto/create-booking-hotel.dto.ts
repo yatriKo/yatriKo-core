@@ -1,4 +1,11 @@
-import { IsDateString, IsInt, IsNotEmpty } from 'class-validator';
+import {
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsEmail,
+  IsString,
+} from 'class-validator';
 
 export class CreateBookingHotelDto {
   @IsNotEmpty()
@@ -11,6 +18,14 @@ export class CreateBookingHotelDto {
   @IsInt()
   roomId: number;
 
+  @IsOptional()
+  @IsEmail({}, { message: 'Invalid email format' })
   clientEmail?: string;
+
+  @IsOptional()
+  @IsString()
   clientName?: string;
+
+  @IsOptional()
+  paymentStatus?: boolean;
 }
