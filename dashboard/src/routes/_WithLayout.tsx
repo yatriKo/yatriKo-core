@@ -4,7 +4,7 @@ import {
   Outlet,
   useRouter,
 } from "@tanstack/react-router";
-import { Bus, Hotel, LayoutDashboard } from "lucide-react";
+import { Bus, Hotel, LayoutDashboard, Users } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "../../components/ui/button";
 
@@ -38,15 +38,23 @@ function RouteComponent() {
               className="[&.active]:bg-amber-300 [&.active]:text-[#264653] [&.active]:font-medium px-4 text-white mt-4 h-10 rounded-md flex gap-1 items-center"
             >
               <Hotel size={24} />
-              Hotel
+              Hotels
             </Link>
-          ) : (
+          ) : getRole() === "BusOwner" ? (
             <Link
               to="/bus"
               className="[&.active]:bg-amber-300 [&.active]:text-[#264653] [&.active]:font-medium px-4 text-white mt-4 h-10 rounded-md flex gap-1 items-center"
             >
               <Bus size={24} />
-              bus
+              Buses
+            </Link>
+          ) : (
+            <Link
+              to="/user"
+              className="[&.active]:bg-amber-300 [&.active]:text-[#264653] [&.active]:font-medium px-4 text-white mt-4 h-10 rounded-md flex gap-1 items-center"
+            >
+              <Users size={24} />
+              Users
             </Link>
           )}
         </div>

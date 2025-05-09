@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as WithLayoutImport } from './routes/_WithLayout'
 import { Route as AuthImport } from './routes/_Auth'
 import { Route as AuthIndexImport } from './routes/_Auth/index'
+import { Route as WithLayoutUserIndexImport } from './routes/_WithLayout/user/index'
 import { Route as WithLayoutHotelIndexImport } from './routes/_WithLayout/hotel/index'
 import { Route as WithLayoutDashboardIndexImport } from './routes/_WithLayout/dashboard/index'
 import { Route as WithLayoutBusIndexImport } from './routes/_WithLayout/bus/index'
@@ -38,6 +39,12 @@ const AuthIndexRoute = AuthIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthRoute,
+} as any)
+
+const WithLayoutUserIndexRoute = WithLayoutUserIndexImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => WithLayoutRoute,
 } as any)
 
 const WithLayoutHotelIndexRoute = WithLayoutHotelIndexImport.update({
@@ -128,6 +135,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithLayoutHotelIndexImport
       parentRoute: typeof WithLayoutImport
     }
+    '/_WithLayout/user/': {
+      id: '/_WithLayout/user/'
+      path: '/user'
+      fullPath: '/user'
+      preLoaderRoute: typeof WithLayoutUserIndexImport
+      parentRoute: typeof WithLayoutImport
+    }
     '/_WithLayout/bus/$edit/': {
       id: '/_WithLayout/bus/$edit/'
       path: '/bus/$edit'
@@ -175,6 +189,7 @@ interface WithLayoutRouteChildren {
   WithLayoutBusIndexRoute: typeof WithLayoutBusIndexRoute
   WithLayoutDashboardIndexRoute: typeof WithLayoutDashboardIndexRoute
   WithLayoutHotelIndexRoute: typeof WithLayoutHotelIndexRoute
+  WithLayoutUserIndexRoute: typeof WithLayoutUserIndexRoute
   WithLayoutBusEditIndexRoute: typeof WithLayoutBusEditIndexRoute
   WithLayoutBusAddIndexRoute: typeof WithLayoutBusAddIndexRoute
   WithLayoutHotelEditIndexRoute: typeof WithLayoutHotelEditIndexRoute
@@ -185,6 +200,7 @@ const WithLayoutRouteChildren: WithLayoutRouteChildren = {
   WithLayoutBusIndexRoute: WithLayoutBusIndexRoute,
   WithLayoutDashboardIndexRoute: WithLayoutDashboardIndexRoute,
   WithLayoutHotelIndexRoute: WithLayoutHotelIndexRoute,
+  WithLayoutUserIndexRoute: WithLayoutUserIndexRoute,
   WithLayoutBusEditIndexRoute: WithLayoutBusEditIndexRoute,
   WithLayoutBusAddIndexRoute: WithLayoutBusAddIndexRoute,
   WithLayoutHotelEditIndexRoute: WithLayoutHotelEditIndexRoute,
@@ -201,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/bus': typeof WithLayoutBusIndexRoute
   '/dashboard': typeof WithLayoutDashboardIndexRoute
   '/hotel': typeof WithLayoutHotelIndexRoute
+  '/user': typeof WithLayoutUserIndexRoute
   '/bus/$edit': typeof WithLayoutBusEditIndexRoute
   '/bus/add': typeof WithLayoutBusAddIndexRoute
   '/hotel/$edit': typeof WithLayoutHotelEditIndexRoute
@@ -213,6 +230,7 @@ export interface FileRoutesByTo {
   '/bus': typeof WithLayoutBusIndexRoute
   '/dashboard': typeof WithLayoutDashboardIndexRoute
   '/hotel': typeof WithLayoutHotelIndexRoute
+  '/user': typeof WithLayoutUserIndexRoute
   '/bus/$edit': typeof WithLayoutBusEditIndexRoute
   '/bus/add': typeof WithLayoutBusAddIndexRoute
   '/hotel/$edit': typeof WithLayoutHotelEditIndexRoute
@@ -227,6 +245,7 @@ export interface FileRoutesById {
   '/_WithLayout/bus/': typeof WithLayoutBusIndexRoute
   '/_WithLayout/dashboard/': typeof WithLayoutDashboardIndexRoute
   '/_WithLayout/hotel/': typeof WithLayoutHotelIndexRoute
+  '/_WithLayout/user/': typeof WithLayoutUserIndexRoute
   '/_WithLayout/bus/$edit/': typeof WithLayoutBusEditIndexRoute
   '/_WithLayout/bus/add/': typeof WithLayoutBusAddIndexRoute
   '/_WithLayout/hotel/$edit/': typeof WithLayoutHotelEditIndexRoute
@@ -241,6 +260,7 @@ export interface FileRouteTypes {
     | '/bus'
     | '/dashboard'
     | '/hotel'
+    | '/user'
     | '/bus/$edit'
     | '/bus/add'
     | '/hotel/$edit'
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/bus'
     | '/dashboard'
     | '/hotel'
+    | '/user'
     | '/bus/$edit'
     | '/bus/add'
     | '/hotel/$edit'
@@ -264,6 +285,7 @@ export interface FileRouteTypes {
     | '/_WithLayout/bus/'
     | '/_WithLayout/dashboard/'
     | '/_WithLayout/hotel/'
+    | '/_WithLayout/user/'
     | '/_WithLayout/bus/$edit/'
     | '/_WithLayout/bus/add/'
     | '/_WithLayout/hotel/$edit/'
@@ -307,6 +329,7 @@ export const routeTree = rootRoute
         "/_WithLayout/bus/",
         "/_WithLayout/dashboard/",
         "/_WithLayout/hotel/",
+        "/_WithLayout/user/",
         "/_WithLayout/bus/$edit/",
         "/_WithLayout/bus/add/",
         "/_WithLayout/hotel/$edit/",
@@ -327,6 +350,10 @@ export const routeTree = rootRoute
     },
     "/_WithLayout/hotel/": {
       "filePath": "_WithLayout/hotel/index.tsx",
+      "parent": "/_WithLayout"
+    },
+    "/_WithLayout/user/": {
+      "filePath": "_WithLayout/user/index.tsx",
       "parent": "/_WithLayout"
     },
     "/_WithLayout/bus/$edit/": {
