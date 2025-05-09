@@ -1,8 +1,18 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import {
   useDeleteBookingBus,
   useGetDashboardDetail,
   useGetDashboardDetailBus,
+  useGetStats,
 } from "./-queries";
 import { useDeleteHotel } from "../hotel/-queries";
 import { useState } from "react";
@@ -59,6 +69,7 @@ function RouteComponent() {
     });
   };
 
+  // function to delete bus
   const deleteBus = () => {
     mutateAsyncBus(hotelId, {
       onSuccess: () => {
@@ -75,9 +86,34 @@ function RouteComponent() {
   const totalPriceBus =
     busData?.data.reduce((acc, item) => acc + item.BusSeat.price, 0) || 0;
 
+  // Register chart elements for admin chart
+  ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+
+  const { data: adminData, isLoading: isAdminLoading } = useGetStats();
+  const userData = {
+    labels: ["Travelers", "Travel agents", "Guest house owners", "Bus owners"],
+    datasets: [
+      {
+        label: "Number of users",
+        data: [
+          adminData?.data.travelerCount || 0,
+          adminData?.data.travelAgentCount || 0,
+          adminData?.data.hotelOwnerCount || 0,
+          adminData?.data.busOwnerCount || 0,
+        ],
+        backgroundColor: ["#d6f365", "#f7b2f0", "#a0e9f1", "#b58af1"],
+        borderRadius: 4,
+      },
+    ],
+  };
+
   return (
     <div>
-      {isLoading || busDataLoading || isPending || isDeletingBus ? (
+      {isLoading ||
+      busDataLoading ||
+      isAdminLoading ||
+      isPending ||
+      isDeletingBus ? (
         <div className="flex h-screen w-full items-center justify-center">
           <div className="flex flex-col items-center space-y-4">
             <div className="h-8 w-8 animate-spin text-gray-500 dark:text-gray-400" />
@@ -180,7 +216,7 @@ function RouteComponent() {
                 </DialogContent>
               </Dialog>
             </>
-          ) : (
+          ) : getRole() === "BusOwner" ? (
             <>
               <div className="mb-10 border border-amber-300 w-fit p-4 rounded-4xl">
                 <h2 className="text-5xl font-medium mb-2">Total Earning</h2>
@@ -268,6 +304,27 @@ function RouteComponent() {
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
+            </>
+          ) : (
+            <>
+              <div className="bg-white shadow-lg p-4 rounded-xl text-black">
+                <h2 className="text-5xl font-medium mb-2">Number of users</h2>
+                <Bar
+                  data={userData}
+                  options={{
+                    scales: {
+                      y: {
+                        suggestedMax:
+                          Math.max(...(userData?.datasets[0].data || 0)) + 2,
+                      },
+                    },
+                    responsive: true,
+                    plugins: {
+                      legend: { display: false },
+                    },
+                  }}
+                />
+              </div>
             </>
           )}
         </>
