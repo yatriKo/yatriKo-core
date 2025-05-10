@@ -18,117 +18,272 @@ import { Button } from "react-day-picker";
 import { DialogHeader } from "../../../../components/ui/dialog";
 import { useState } from "react";
 import { queryClient } from "../../__root";
+import {
+  useGetBusOwners,
+  useGetHotelOwners,
+  useGetTravelAgents,
+  useGetTravelers,
+} from "./-queries";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../../components/ui/tabs";
 
 export const Route = createFileRoute("/_WithLayout/user/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  //   const { data, isLoading } = useGetHotel();
+  const {
+    data: hotelOwnerData,
+    isLoading: isLoadingHotelOwner,
+    refetch: refetchHotelOwner,
+  } = useGetHotelOwners(true);
 
-  //   const { mutateAsync, isPending } = useDeleteHotel();
+  const {
+    data: busOwnerData,
+    isLoading: isLoadingBusOwner,
+    refetch: refetchBusOwner,
+  } = useGetBusOwners(false);
 
-  //   const { navigate } = useRouter();
+  const {
+    data: travelerData,
+    isLoading: isLoadingTraveler,
+    refetch: refetchTraveler,
+  } = useGetTravelers(false);
 
-  //   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  //   const [hotelId, setHotelId] = useState(0);
+  const {
+    data: travelAgentData,
+    isLoading: isLoadingTravelAgent,
+    refetch: refetchTravelAgent,
+  } = useGetTravelAgents(false);
 
-  //   const deleteHotel = () => {
-  //     mutateAsync(hotelId, {
-  //       onSuccess: () => {
-  //         queryClient.invalidateQueries({ queryKey: ["getHotel"] });
-  //       },
-  //     });
-  //   };
+  // const { mutateAsync, isPending } = useDeleteHotel();
+
+  const { navigate } = useRouter();
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [hotelId, setHotelId] = useState(0);
+
+  // const deleteHotel = () => {
+  //   mutateAsync(hotelId, {
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries({ queryKey: ["getHotel"] });
+  //     },
+  //   });
+  // };
   return (
     <div>
-      {isLoading || isPending ? (
-        <div className="flex h-screen w-full items-center justify-center">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="h-8 w-8 animate-spin text-gray-500 dark:text-gray-400" />
-            <p className="text-gray-500 dark:text-gray-400">Loading...</p>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center justify-between">
-            <h2 className="text-4xl font-medium">Hotels</h2>
-            <Link
-              to="/hotel/add"
-              className="bg-[#26465333] hover:bg-[#26465325] font-medium cursor-pointer flex px-4 py-2 rounded-md"
-            >
-              Add Hotel
-            </Link>
-          </div>
-          <Table className="mt-8">
-            <TableHeader>
-              <TableRow className="bg-[#26465333] hover:bg-[#26465325]">
-                <TableHead>Hotel Name</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Phone Number</TableHead>
-                <TableHead className="w-[100px]">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data &&
-                data.data.map((hotel, idx) => (
-                  <TableRow
-                    key={idx}
-                    className="cursor-pointer pointer-events-auto"
-                    onClick={() => navigate({ to: `/hotel/${hotel.id}` })}
-                  >
-                    <TableCell>{hotel.name}</TableCell>
-                    <TableCell>{hotel.location}</TableCell>
-                    <TableCell>{hotel.phoneNumber}</TableCell>
-                    <TableCell
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setOpenDeleteModal(true);
-                        setHotelId(hotel.id);
-                      }}
-                    >
-                      <Trash2 color="red" />
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-          <Dialog
-            open={openDeleteModal}
-            onOpenChange={() => setOpenDeleteModal(false)}
+      <div>
+        <h2 className="text-4xl font-medium">YatriKo Users</h2>
+      </div>
+      <Tabs defaultValue="Hotel Owners" className="w-full mt-8">
+        <TabsList>
+          <TabsTrigger value="Hotel Owners" onClick={() => refetchHotelOwner()}>
+            Hotel Owners
+          </TabsTrigger>
+          <TabsTrigger value="Bus Owners" onClick={() => refetchBusOwner()}>
+            Bus Owners
+          </TabsTrigger>
+          <TabsTrigger value="Travelers" onClick={() => refetchTraveler()}>
+            Travelers
+          </TabsTrigger>
+          <TabsTrigger
+            value="Travel Agents"
+            onClick={() => refetchTravelAgent()}
           >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  Are you sure you want to delete this hotel?
-                </DialogTitle>
-                <DialogDescription className="my-4">
-                  This action cannot be undone. This will permanently delete
-                  your hotel and remove your data from our servers.
-                </DialogDescription>
-                <div className="flex gap-2">
-                  <Button
-                    className="grow cursor-pointer"
-                    onClick={() => setOpenDeleteModal(false)}
-                    variant={"outline"}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
+            Travel Agents
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="Hotel Owners">
+          {isLoadingHotelOwner ? (
+            <div>loading...</div>
+          ) : (
+            <Table className="mt-4">
+              <TableHeader>
+                <TableRow className="bg-[#26465333] hover:bg-[#26465325]">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>No. of Hotels</TableHead>
+                  <TableHead className="w-[100px]">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {hotelOwnerData &&
+                  hotelOwnerData.data.map((hotelOwner, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell>{hotelOwner.name}</TableCell>
+                      <TableCell>{hotelOwner.email}</TableCell>
+                      <TableCell>{hotelOwner._count.hotels}</TableCell>
+                      <TableCell
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDeleteModal(true);
+                          setHotelId(hotelOwner.id);
+                        }}
+                      >
+                        <Trash2 color="red" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          )}
+        </TabsContent>
+        <TabsContent value="Bus Owners">
+          {isLoadingBusOwner ? (
+            <div>loading...</div>
+          ) : (
+            <Table className="mt-4">
+              <TableHeader>
+                <TableRow className="bg-[#26465333] hover:bg-[#26465325]">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>No. of Buses</TableHead>
+                  <TableHead className="w-[100px]">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {busOwnerData &&
+                  busOwnerData.data.map((busOwner, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell>{busOwner.name}</TableCell>
+                      <TableCell>{busOwner.email}</TableCell>
+                      <TableCell>{busOwner._count.buses}</TableCell>
+                      <TableCell
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDeleteModal(true);
+                          setHotelId(busOwner.id);
+                        }}
+                      >
+                        <Trash2 color="red" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          )}
+        </TabsContent>
+        <TabsContent value="Travelers">
+          {isLoadingTraveler ? (
+            <div>loading...</div>
+          ) : (
+            <Table className="mt-4">
+              <TableHeader>
+                <TableRow className="bg-[#26465333] hover:bg-[#26465325]">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone number</TableHead>
+                  <TableHead>No. of Bus Bookings</TableHead>
+                  <TableHead>No. of Hotel Bookings</TableHead>
+                  <TableHead className="w-[100px]">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {travelerData &&
+                  travelerData.data.map((traveler, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell>{traveler.name}</TableCell>
+                      <TableCell>{traveler.email}</TableCell>
+                      <TableCell>{traveler.phoneNumber}</TableCell>
+                      <TableCell>{traveler._count.busBookings}</TableCell>
+                      <TableCell>{traveler._count.hotelBookings}</TableCell>
+                      <TableCell
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDeleteModal(true);
+                          setHotelId(traveler.id);
+                        }}
+                      >
+                        <Trash2 color="red" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          )}
+        </TabsContent>
+        <TabsContent value="Travel Agents">
+          {isLoadingTravelAgent ? (
+            <div>loading...</div>
+          ) : (
+            <Table className="mt-4">
+              <TableHeader>
+                <TableRow className="bg-[#26465333] hover:bg-[#26465325]">
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone number</TableHead>
+                  <TableHead>No. of Bus Bookings</TableHead>
+                  <TableHead>No. of Hotel Bookings</TableHead>
+                  <TableHead className="w-[100px]">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {travelAgentData &&
+                  travelAgentData.data.map((travelAgent, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell>{travelAgent.name}</TableCell>
+                      <TableCell>{travelAgent.email}</TableCell>
+                      <TableCell>{travelAgent.phoneNumber}</TableCell>
+                      <TableCell>{travelAgent._count.busBookings}</TableCell>
+                      <TableCell>{travelAgent._count.hotelBookings}</TableCell>
+                      <TableCell
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenDeleteModal(true);
+                          setHotelId(travelAgent.id);
+                        }}
+                      >
+                        <Trash2 color="red" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          )}
+        </TabsContent>
+      </Tabs>
+
+      <Dialog
+        open={openDeleteModal}
+        onOpenChange={() => setOpenDeleteModal(false)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Are you sure you want to delete this hotel?
+            </DialogTitle>
+            <DialogDescription className="my-4">
+              This action cannot be undone. This will permanently delete your
+              hotel and remove your data from our servers.
+            </DialogDescription>
+            <div className="flex gap-2">
+              <Button
+                className="grow cursor-pointer"
+                onClick={() => setOpenDeleteModal(false)}
+                variant={"outline"}
+              >
+                Cancel
+              </Button>
+              {/* <Button
                     className="grow bg-red-600 hover:bg-red-500 cursor-pointer"
                     onClick={() => {
                       setOpenDeleteModal(false), deleteHotel();
                     }}
                   >
                     Delete
-                  </Button>
-                </div>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        </>
-      )}
+                  </Button> */}
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
