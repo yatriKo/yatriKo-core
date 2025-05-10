@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Roles } from '../roles/roles.decorator';
 
@@ -28,5 +28,17 @@ export class UsersController {
   @Roles('Admin')
   getHotelOwners() {
     return this.usersService.findHotelOwners();
+  }
+
+  @Delete('/client/:id')
+  @Roles('Admin')
+  deleteClient(@Param('id') id) {
+    return this.usersService.deleteClientUser(+id);
+  }
+
+  @Delete('/dashboard/:id')
+  @Roles('Admin')
+  deleteDashboard(@Param('id') id) {
+    return this.usersService.deleteDashboardUser(+id);
   }
 }
