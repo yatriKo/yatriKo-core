@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import instance from "../../../lib/axios";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 export type DashboardUser = Array<{
   id: number;
@@ -16,6 +16,24 @@ export type ClientUser = Array<{
   email: string;
   _count: { busBookings?: number; hotelBookings?: number };
 }>;
+
+export const useDeleteClientUser = () => {
+  const data = useMutation({
+    mutationFn: async (id: number) => {
+      await instance.delete(`/users/client/${id}`);
+    },
+  });
+  return data;
+};
+
+export const useDeleteDashboardUser = () => {
+  const data = useMutation({
+    mutationFn: async (id: number) => {
+      await instance.delete(`/users/dashboard/${id}`);
+    },
+  });
+  return data;
+};
 
 export const useGetHotelOwners = (enabled: boolean) => {
   const data = useQuery<AxiosResponse<DashboardUser>, Error>({

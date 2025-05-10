@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Table,
   TableBody,
@@ -7,18 +7,19 @@ import {
   TableHeader,
   TableRow,
 } from "../../../../components/ui/table";
-import { Link, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from "@radix-ui/react-dialog";
-import { Button } from "react-day-picker";
-import { DialogHeader } from "../../../../components/ui/dialog";
+  DialogHeader,
+} from "../../../../components/ui/dialog";
+import { Button } from "../../../../components/ui/button";
 import { useState } from "react";
-import { queryClient } from "../../__root";
 import {
+  useDeleteClientUser,
+  useDeleteDashboardUser,
   useGetBusOwners,
   useGetHotelOwners,
   useGetTravelAgents,
@@ -30,6 +31,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../../../components/ui/tabs";
+import { queryClient } from "../../__root";
 
 export const Route = createFileRoute("/_WithLayout/user/")({
   component: RouteComponent,
@@ -60,20 +62,33 @@ function RouteComponent() {
     refetch: refetchTravelAgent,
   } = useGetTravelAgents(false);
 
-  // const { mutateAsync, isPending } = useDeleteHotel();
-
-  const { navigate } = useRouter();
+  const { mutateAsync: mutateClientDelete } = useDeleteClientUser();
+  const { mutateAsync: mutateDashboardDelete } = useDeleteDashboardUser();
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [hotelId, setHotelId] = useState(0);
+  const [userDetails, setUserDetails] = useState({ type: "", id: 0 });
 
-  // const deleteHotel = () => {
-  //   mutateAsync(hotelId, {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({ queryKey: ["getHotel"] });
-  //     },
-  //   });
-  // };
+  const deleteUser = () => {
+    switch (userDetails.type) {
+      case "client":
+        mutateClientDelete(userDetails.id, {
+          onSuccess: () => {
+            refetchTravelAgent();
+            refetchTraveler();
+          },
+        });
+        break;
+
+      case "dashboard":
+        mutateDashboardDelete(userDetails.id, {
+          onSuccess: () => {
+            refetchBusOwner();
+            refetchHotelOwner();
+          },
+        });
+        break;
+    }
+  };
   return (
     <div>
       <div>
@@ -122,7 +137,10 @@ function RouteComponent() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenDeleteModal(true);
-                          setHotelId(hotelOwner.id);
+                          setUserDetails({
+                            type: "dashboard",
+                            id: hotelOwner.id,
+                          });
                         }}
                       >
                         <Trash2 color="red" />
@@ -158,7 +176,10 @@ function RouteComponent() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenDeleteModal(true);
-                          setHotelId(busOwner.id);
+                          setUserDetails({
+                            type: "dashboard",
+                            id: busOwner.id,
+                          });
                         }}
                       >
                         <Trash2 color="red" />
@@ -198,7 +219,10 @@ function RouteComponent() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenDeleteModal(true);
-                          setHotelId(traveler.id);
+                          setUserDetails({
+                            type: "client",
+                            id: traveler.id,
+                          });
                         }}
                       >
                         <Trash2 color="red" />
@@ -238,7 +262,10 @@ function RouteComponent() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenDeleteModal(true);
-                          setHotelId(travelAgent.id);
+                          setUserDetails({
+                            type: "client",
+                            id: travelAgent.id,
+                          });
                         }}
                       >
                         <Trash2 color="red" />
@@ -258,11 +285,11 @@ function RouteComponent() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Are you sure you want to delete this hotel?
+              Are you sure you want to delete this user?
             </DialogTitle>
             <DialogDescription className="my-4">
-              This action cannot be undone. This will permanently delete your
-              hotel and remove your data from our servers.
+              This action cannot be undone. This will permanently delete the
+              user and remove their data from our servers.
             </DialogDescription>
             <div className="flex gap-2">
               <Button
@@ -272,14 +299,14 @@ function RouteComponent() {
               >
                 Cancel
               </Button>
-              {/* <Button
-                    className="grow bg-red-600 hover:bg-red-500 cursor-pointer"
-                    onClick={() => {
-                      setOpenDeleteModal(false), deleteHotel();
-                    }}
-                  >
-                    Delete
-                  </Button> */}
+              <Button
+                className="grow bg-red-600 hover:bg-red-500 cursor-pointer"
+                onClick={() => {
+                  setOpenDeleteModal(false), deleteUser();
+                }}
+              >
+                Delete
+              </Button>
             </div>
           </DialogHeader>
         </DialogContent>
