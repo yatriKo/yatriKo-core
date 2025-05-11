@@ -90,32 +90,40 @@ function App() {
 
         {/* Grid of 9 Images in 3x3 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
-          {isHotelSearch
-            ? isFetchingHotels
-              ? "Loading"
-              : hotelsData.data.map((data) => {
-                  return (
-                    <SearchCard
-                      href={`/hotel-details/${data.id}`}
-                      image={data.image[0]}
-                      name={data.name}
-                      key={data.name}
-                    />
-                  );
-                })
-            : isFetchingBus
-            ? "Loading"
-            : busData.data.map((data) => {
+          {isHotelSearch ? (
+            isFetchingHotels ? (
+              "Loading"
+            ) : hotelsData.data.length === 0 ? (
+              <p className="col-span-full">{`Sorry! We could not find any hotels matching "${searchVal}". Please try with a different keyword.`}</p>
+            ) : (
+              hotelsData.data.map((data) => {
                 return (
                   <SearchCard
+                    href={`/hotel-details/${data.id}`}
                     image={data.image[0]}
-                    href={`/bus-details/${data.id}`}
-                    name={`${data.from} - ${data.to}`}
-                    addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
-                    key={data.date}
+                    name={data.name}
+                    key={data.name}
                   />
                 );
-              })}
+              })
+            )
+          ) : isFetchingBus ? (
+            "Loading"
+          ) : busData.data.length === 0 ? (
+            <p className="col-span-full">{`Sorry! We could not find any bus routes matching "${searchVal}". Please try with a different keyword.`}</p>
+          ) : (
+            busData.data.map((data) => {
+              return (
+                <SearchCard
+                  image={data.image[0]}
+                  href={`/bus-details/${data.id}`}
+                  name={`${data.from} - ${data.to}`}
+                  addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
+                  key={data.date}
+                />
+              );
+            })
+          )}
         </div>
       </main>
     </div>
