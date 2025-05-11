@@ -86,7 +86,7 @@ const YatriLoginPage = () => {
       setLoginError(false);
       const data = await userLogin(loginEmail, loginPass);
       setToken(data);
-      router.push("/");
+      router.back();
     } catch (error) {
       setLoginError(true);
       console.log(error);
