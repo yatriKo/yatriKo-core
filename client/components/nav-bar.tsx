@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import BookingPopup from "./booking-popup";
 
 export default function NavBar() {
-  const { token, setToken } = useAuth();
+  const { token, setToken, getName } = useAuth();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [screenSize, setScreenSize] = useState({
@@ -142,7 +142,9 @@ export default function NavBar() {
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <CircleUserRound className="text-white" />
+              <div className="flex gap-2 text-white cursor-pointer">
+                <CircleUserRound className="text-white" /> {getName()} &#9207;
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-4 mt-2 rounded-sm bg-white">
               <DropdownMenuItem
