@@ -41,10 +41,12 @@ function App() {
                   }}
                   className="border-none outline-none p-[5px] flex-1 bg-transparent text-black placeholder:font-bold placeholder:text-[#264653] placeholder:font-['Newsreader',serif]"
                 />
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="text-[#264653] text-lg ml-[10px]"
-                />
+                <button type="submit" className="cursor-pointer">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="text-[#264653] text-lg ml-[10px]"
+                  />
+                </button>
               </div>
             </form>
           </div>
