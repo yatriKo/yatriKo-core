@@ -94,7 +94,7 @@ function App() {
             isFetchingHotels ? (
               "Loading"
             ) : hotelsData.data.length === 0 ? (
-              <p className="col-span-full">{`Sorry! We could not find any hotels matching "${searchVal}". Please try with a different keyword.`}</p>
+              <p className="col-span-full">{`Sorry! We could not find any hotels matching "${search}". Please try with a different keyword.`}</p>
             ) : (
               hotelsData.data.map((data) => {
                 return (
@@ -110,7 +110,7 @@ function App() {
           ) : isFetchingBus ? (
             "Loading"
           ) : busData.data.length === 0 ? (
-            <p className="col-span-full">{`Sorry! We could not find any bus routes matching "${searchVal}". Please try with a different keyword.`}</p>
+            <p className="col-span-full">{`Sorry! We could not find any bus routes matching "${search}". Please try with a different keyword.`}</p>
           ) : (
             busData.data.map((data) => {
               return (
