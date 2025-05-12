@@ -42,6 +42,25 @@ export const PaymentModal = ({
     setActiveStep("success"), handleBooking();
   };
 
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [showCardErrors, setShowCardErrors] = useState(false);
+
+  const validateCardDetails = () => {
+    const cardNumberRegex = /^[0-9]{8,12}$/;
+    const expiryDateRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    const cvvRegex = /^[0-9]{3,4}$/;
+
+    return (
+      cardNumberRegex.test(cardNumber.replace(/\s/g, "")) &&
+      cardName.trim() !== "" &&
+      expiryDateRegex.test(expiryDate) &&
+      cvvRegex.test(cvv)
+    );
+  };
+
   const CloseButton = () => (
     <button
       onClick={close}
@@ -130,27 +149,68 @@ export const PaymentModal = ({
               type="text"
               placeholder="Card Number"
               className="w-full p-2 rounded bg-[#3b5b63] text-white"
+              value={cardNumber}
+              onChange={(e) => setCardNumber(e.target.value)}
             />
+            {showCardErrors &&
+              !/^[0-9]{13,19}$/.test(cardNumber.replace(/\s/g, "")) && (
+                <p className="text-red-500 text-xs mt-1">Invalid card number</p>
+              )}
+
             <input
               type="text"
               placeholder="Name on card"
               className="w-full p-2 rounded bg-[#3b5b63] text-white"
+              value={cardName}
+              onChange={(e) => setCardName(e.target.value)}
             />
+            {showCardErrors && cardName.trim() === "" && (
+              <p className="text-red-500 text-xs mt-1">
+                Name on card is required
+              </p>
+            )}
+
             <div className="flex gap-3">
               <input
                 type="text"
                 placeholder="MM/YY"
                 className="w-1/2 p-2 rounded bg-[#3b5b63] text-white"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
               />
+              {showCardErrors &&
+                !/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(expiryDate) && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Invalid expiry date
+                  </p>
+                )}
+
               <input
                 type="text"
                 placeholder="CVV"
                 className="w-1/2 p-2 rounded bg-[#3b5b63] text-white"
+                value={cvv}
+                onChange={(e) => setCvv(e.target.value)}
               />
+              {showCardErrors && !/^[0-9]{3,4}$/.test(cvv) && (
+                <p className="text-red-500 text-xs mt-1">Invalid CVV</p>
+              )}
             </div>
+
             <button
-              onClick={handlePaymentSuccess}
-              className="w-full bg-green-600 hover:bg-green-500 text-white p-2 rounded"
+              onClick={() => {
+                if (validateCardDetails()) {
+                  handlePaymentSuccess();
+                } else {
+                  setShowCardErrors(true);
+                }
+              }}
+              disabled={!validateCardDetails()}
+              className={`w-full p-2 rounded ${
+                validateCardDetails()
+                  ? "bg-green-600 hover:bg-green-500"
+                  : "bg-gray-500 cursor-not-allowed"
+              }`}
             >
               Pay Now
             </button>

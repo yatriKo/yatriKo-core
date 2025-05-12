@@ -12,12 +12,20 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PaymentModal } from "./components/PaymentModal";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import Link from "next/link";
 
 function BusDetails() {
   const { id } = useParams();
   const { token } = useAuth();
+
+  const [showErrors, setShowErrors] = useState(false);
+
+  // Validation function
+  const isFormValid = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return clientName.trim() !== "" && emailRegex.test(email);
+  };
 
   const { data: busData, isFetching } = useGetBusDetails(+id);
   const [confirmationPopupActive, setConfirmationPopupActive] = useState(false);
@@ -173,6 +181,12 @@ function BusDetails() {
         {/* Confirmation Popup */}
         {confirmationPopupActive && selectedSeat && (
           <div className="confirmation-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] bg-[#264653] text-white rounded-[10px] shadow-xl z-[3000] p-10 font-serif">
+            <button
+              onClick={() => setConfirmationPopupActive(false)}
+              className="flex cursor-pointer w-full justify-end mb-4"
+            >
+              <X size={24} />
+            </button>
             <h3 className="text-center text-xl tracking-widest border border-white px-6 py-2 rounded mb-8 w-fit mx-auto uppercase">
               Booking Confirmation
             </h3>
@@ -196,6 +210,22 @@ function BusDetails() {
                       />
                     </div>
                   ))}
+
+                  {/* Error Messages */}
+                  {showErrors && (
+                    <>
+                      {clientName.trim() === "" && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Name is required
+                        </p>
+                      )}
+                      {!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Invalid email format
+                        </p>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
 
@@ -215,10 +245,19 @@ function BusDetails() {
             <div className="mt-10 text-center">
               <button
                 onClick={() => {
-                  setConfirmationPopupActive(false);
-                  setPaymentPopupActive(true);
+                  if (isFormValid()) {
+                    setConfirmationPopupActive(false);
+                    setPaymentPopupActive(true);
+                  } else {
+                    setShowErrors(true);
+                  }
                 }}
-                className="border border-white px-8 py-2 rounded uppercase tracking-widest hover:bg-white hover:text-[#4C6663] transition"
+                disabled={!isFormValid()}
+                className={`border border-white px-8 py-2 rounded uppercase tracking-widest transition ${
+                  isFormValid()
+                    ? "hover:bg-white hover:text-[#4C6663]"
+                    : "opacity-50 cursor-not-allowed"
+                }`}
               >
                 Next
               </button>

@@ -23,6 +23,8 @@ function HotelDetails() {
   const searchParams = useSearchParams();
   const activeFilter = searchParams.get("search");
 
+  const [showEmailError, setShowEmailError] = useState(false);
+
   const { data: hotelData, isFetching } = useGetHotelDetails(+id);
   const [confirmationPopupActive, setConfirmationPopupActive] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<{
@@ -213,14 +215,25 @@ function HotelDetails() {
                         type={label === "Email" ? "email" : "text"}
                         className="flex-1 border border-white bg-transparent px-3 py-1 rounded outline-none focus:ring-2 focus:ring-white"
                         value={label === "Email" ? email : clientName}
-                        onChange={(e) =>
-                          label === "Email"
-                            ? setEmail(e.target.value)
-                            : setClientName(e.target.value)
-                        }
+                        onChange={(e) => {
+                          if (label === "Email") {
+                            setEmail(e.target.value);
+                            if (showEmailError) setShowEmailError(false);
+                          } else {
+                            setClientName(e.target.value);
+                          }
+                        }}
                       />
                     </div>
                   ))}
+                  {/* Email Validation Error */}
+                  {showEmailError &&
+                    email &&
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
+                      <p className="text-red-500 text-xs mt-1">
+                        Invalid email format
+                      </p>
+                    )}
                 </div>
               )}
 
@@ -249,10 +262,26 @@ function HotelDetails() {
             <div className="mt-10 text-center">
               <button
                 onClick={() => {
-                  setConfirmationPopupActive(false);
-                  setPaymentPopupActive(true);
+                  if (
+                    token?.role === "TravelAgent" &&
+                    (!clientName.trim() ||
+                      !email.trim() ||
+                      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                  ) {
+                    setShowEmailError(true);
+                  } else {
+                    setConfirmationPopupActive(false);
+                    setPaymentPopupActive(true);
+                  }
                 }}
-                className="border border-white px-8 py-2 rounded uppercase tracking-widest hover:bg-white hover:text-[#4C6663] transition"
+                className={`border border-white px-8 py-2 rounded uppercase tracking-widest transition ${
+                  token?.role === "TravelAgent" &&
+                  (!clientName.trim() ||
+                    !email.trim() ||
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-white hover:text-[#4C6663]"
+                }`}
               >
                 Next
               </button>
