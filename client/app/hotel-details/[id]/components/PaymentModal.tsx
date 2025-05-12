@@ -45,7 +45,7 @@ export const PaymentModal = ({
   const CloseButton = () => (
     <button
       onClick={close}
-      className="absolute top-4 right-4 text-white hover:text-gray-300"
+      className="absolute top-4 cursor-pointer right-4 text-white hover:text-gray-300"
     >
       <X size={24} />
     </button>
@@ -54,7 +54,10 @@ export const PaymentModal = ({
   return (
     <div className="min-h-screen bg-[#25495700] fixed top-0 left-0 flex items-center justify-center py-10 font-serif w-full">
       {activeStep === "summary" && (
-        <div className="w-[440px] bg-[#2F4B50] rounded-[20px] p-6 text-white text-left shadow-2xl space-y-6">
+        <div className="w-[440px] relative bg-[#2F4B50] rounded-[20px] p-6 text-white text-left shadow-2xl space-y-6">
+          <div>
+            <CloseButton />
+          </div>
           <h2 className="border border-white text-center w-full px-4 py-2 rounded tracking-widest uppercase text-sm">
             Booking Summary & Payment
           </h2>

@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PaymentModal } from "./components/PaymentModal";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 
 function HotelDetails() {
   const { id } = useParams();
@@ -196,6 +196,9 @@ function HotelDetails() {
         {/* Confirmation Popup */}
         {confirmationPopupActive && selectedRoom && (
           <div className="confirmation-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] bg-[#264653] text-white rounded-[10px] shadow-xl z-[3000] p-10 font-serif">
+            <div className="flex w-full justify-end mb-4">
+              <X size={24} />
+            </div>
             <h3 className="text-center text-xl tracking-widest border border-white px-6 py-2 rounded mb-8 w-fit mx-auto uppercase">
               Booking Confirmation
             </h3>
