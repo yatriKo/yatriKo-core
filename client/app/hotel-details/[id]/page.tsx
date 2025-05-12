@@ -9,14 +9,21 @@ import {
 import BookingCard from "@/components/booking-card";
 import { DateRangePicker } from "@/components/date-picker-range";
 import dayjs from "dayjs";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PaymentModal } from "./components/PaymentModal";
+import Link from "next/link";
+import { ChevronLeft, X } from "lucide-react";
 
 function HotelDetails() {
   const { id } = useParams();
   const { token } = useAuth();
+
+  const searchParams = useSearchParams();
+  const activeFilter = searchParams.get("search");
+
+  const [showEmailError, setShowEmailError] = useState(false);
 
   const { data: hotelData, isFetching } = useGetHotelDetails(+id);
   const [confirmationPopupActive, setConfirmationPopupActive] = useState(false);
@@ -101,6 +108,16 @@ function HotelDetails() {
     <div className="font-sans m-0 p-0 text-center text-[#264653] min-h-screen overflow-x-hidden bg-[#f5f5f5]">
       <main className="py-[100px]">
         {/* Header with booking icons */}
+        <Link
+          href={{
+            pathname: "/destinations",
+            query: { search: activeFilter },
+          }}
+          className="pl-4 items-center text-2xl mb-4 flex gap-1"
+        >
+          <ChevronLeft size={32} />
+          Back
+        </Link>
         <header className="flex items-center justify-between p-[10px_20px] bg-[rgba(254,250,224,0.3)]">
           <div className="flex flex-col items-start">
             <div className="text-[28px] font-['Newsreader',serif] font-bold text-[#264653]">
@@ -181,6 +198,9 @@ function HotelDetails() {
         {/* Confirmation Popup */}
         {confirmationPopupActive && selectedRoom && (
           <div className="confirmation-popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] bg-[#264653] text-white rounded-[10px] shadow-xl z-[3000] p-10 font-serif">
+            <div className="flex w-full justify-end mb-4">
+              <X size={24} />
+            </div>
             <h3 className="text-center text-xl tracking-widest border border-white px-6 py-2 rounded mb-8 w-fit mx-auto uppercase">
               Booking Confirmation
             </h3>
@@ -195,14 +215,25 @@ function HotelDetails() {
                         type={label === "Email" ? "email" : "text"}
                         className="flex-1 border border-white bg-transparent px-3 py-1 rounded outline-none focus:ring-2 focus:ring-white"
                         value={label === "Email" ? email : clientName}
-                        onChange={(e) =>
-                          label === "Email"
-                            ? setEmail(e.target.value)
-                            : setClientName(e.target.value)
-                        }
+                        onChange={(e) => {
+                          if (label === "Email") {
+                            setEmail(e.target.value);
+                            if (showEmailError) setShowEmailError(false);
+                          } else {
+                            setClientName(e.target.value);
+                          }
+                        }}
                       />
                     </div>
                   ))}
+                  {/* Email Validation Error */}
+                  {showEmailError &&
+                    email &&
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && (
+                      <p className="text-red-500 text-xs mt-1">
+                        Invalid email format
+                      </p>
+                    )}
                 </div>
               )}
 
@@ -231,10 +262,26 @@ function HotelDetails() {
             <div className="mt-10 text-center">
               <button
                 onClick={() => {
-                  setConfirmationPopupActive(false);
-                  setPaymentPopupActive(true);
+                  if (
+                    token?.role === "TravelAgent" &&
+                    (!clientName.trim() ||
+                      !email.trim() ||
+                      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                  ) {
+                    setShowEmailError(true);
+                  } else {
+                    setConfirmationPopupActive(false);
+                    setPaymentPopupActive(true);
+                  }
                 }}
-                className="border border-white px-8 py-2 rounded uppercase tracking-widest hover:bg-white hover:text-[#4C6663] transition"
+                className={`border border-white px-8 py-2 rounded uppercase tracking-widest transition ${
+                  token?.role === "TravelAgent" &&
+                  (!clientName.trim() ||
+                    !email.trim() ||
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-white hover:text-[#4C6663]"
+                }`}
               >
                 Next
               </button>

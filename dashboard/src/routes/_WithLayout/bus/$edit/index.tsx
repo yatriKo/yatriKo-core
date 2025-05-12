@@ -81,7 +81,6 @@ function RouteComponent() {
 
   useEffect(() => {
     if (data) {
-      console.log(data.data.busSeats);
       const groupedSeats: Record<
         string,
         { price: number; numberOfSeats: number }

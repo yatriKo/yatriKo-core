@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import Image from "next/image";
 
 function SearchCard({
@@ -22,7 +23,7 @@ function SearchCard({
         <span className="absolute bottom-[10px] left-1/2 transform -translate-x-1/2 bg-[#264653cc] px-3 py-1 rounded text-white text-sm font-semibold">
           {`${name}`}
           {addInfo && <br />}
-          {`${addInfo ? " " + addInfo : ""}`}
+          {`${addInfo ? " " + dayjs(addInfo).format("MM MMM YYYY") : ""}`}
         </span>
       </div>
     </a>

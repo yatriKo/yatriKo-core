@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBus, faBed } from "@fortawesome/free-solid-svg-icons";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,10 +11,13 @@ import dayjs from "dayjs";
 function App() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const activeFilter = searchParams.get("from");
   const search = searchParams.get("search");
   const [searchVal, setSearchVal] = useState(search || "");
 
-  const [isHotelSearch, setIsHotelSearch] = useState(true);
+  const [isHotelSearch, setIsHotelSearch] = useState(
+    activeFilter !== "bus" ? true : false
+  );
 
   const { data: hotelsData, isFetching: isFetchingHotels } =
     useHotelSearch(search);
@@ -99,7 +102,7 @@ function App() {
               hotelsData.data.map((data) => {
                 return (
                   <SearchCard
-                    href={`/hotel-details/${data.id}`}
+                    href={`/hotel-details/${data.id}?search=${search}`}
                     image={data.image[0]}
                     name={data.name}
                     key={data.name}
@@ -116,7 +119,7 @@ function App() {
               return (
                 <SearchCard
                   image={data.image[0]}
-                  href={`/bus-details/${data.id}`}
+                  href={`/bus-details/${data.id}?search=${search}`}
                   name={`${data.from} - ${data.to}`}
                   addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
                   key={data.date}

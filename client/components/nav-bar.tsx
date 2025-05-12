@@ -10,6 +10,7 @@ import {
 import { X, Menu, LogIn, CircleUserRound } from "lucide-react";
 import { useState, useEffect } from "react";
 import BookingPopup from "./booking-popup";
+import Link from "next/link";
 
 export default function NavBar() {
   const { token, setToken, getName } = useAuth();
@@ -69,12 +70,15 @@ export default function NavBar() {
   return (
     <>
       <nav className="navbar h-[80px] fixed top-0 left-0 w-full bg-black/30 shadow-md z-50 px-2 sm:px-4 py-2 sm:py-3 flex justify-between items-center">
-        <div className="logo text-[#FEFAE0] text-xl sm:text-2xl font-bold">
+        <Link
+          href={"/"}
+          className="logo text-[#FEFAE0] text-xl sm:text-2xl font-bold"
+        >
           <span className="font-newsreader italic text-base sm:text-2xl">
             Yatri
           </span>{" "}
           <span className="font-newsreader text-base sm:text-2xl">को</span>
-        </div>
+        </Link>
 
         {/* Burger Menu Icon */}
         <div
