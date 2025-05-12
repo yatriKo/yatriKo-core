@@ -59,7 +59,7 @@ function App() {
               <FontAwesomeIcon
                 icon={faBed}
                 className={`text-[30px] ${
-                  isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
+                  !isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
                 }`}
               />
               <span className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 bg-[#264653] text-[#FEFAE0] py-[6px] px-[10px] rounded-md text-[13px] font-bold whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible">
@@ -73,7 +73,7 @@ function App() {
               <FontAwesomeIcon
                 icon={faBus}
                 className={`text-[30px] ${
-                  !isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
+                  isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
                 }`}
               />
               <span className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 bg-[#264653] text-[#FEFAE0] py-[6px] px-[10px] rounded-md text-[13px] font-bold whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible">
