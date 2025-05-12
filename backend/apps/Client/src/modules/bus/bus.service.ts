@@ -48,8 +48,8 @@ export class BusService {
           },
           where: {
             OR: [
-              { from: { contains: search || '' } },
-              { to: { contains: search || '' } },
+              { from: { contains: search || '', mode: 'insensitive' } },
+              { to: { contains: search || '', mode: 'insensitive' } },
             ],
             ...(date ? { date: dateFilter } : {}),
           },
