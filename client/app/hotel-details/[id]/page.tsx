@@ -23,7 +23,7 @@ function HotelDetails() {
   const [selectedRoom, setSelectedRoom] = useState<{
     id?: number;
     label: string;
-    price: string;
+    price: number;
   } | null>(null);
 
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
@@ -164,6 +164,7 @@ function HotelDetails() {
           {roomsData ? (
             roomsData.map((room) => (
               <BookingCard
+                type="hotel"
                 key={room.id}
                 id={room.id}
                 label={room.roomType}
@@ -212,11 +213,16 @@ function HotelDetails() {
                 </div>
                 <p>{selectedRoom.label}</p>
                 <p>{`${hotelData.name}, ${hotelData.location}`}</p>
-                <p>Room price - Rs. {selectedRoom.price}</p>
+                <p>Room price - Rs. {selectedRoom.price} per day</p>
                 <p>
                   {`${dayjs(checkInDate).format("MMM D, YYYY")} - ${dayjs(
                     checkOutDate
                   ).format("MMM D, YYYY")}`}
+                </p>
+                <p>
+                  Grand total - Rs.{" "}
+                  {selectedRoom.price *
+                    dayjs(checkOutDate).diff(dayjs(checkInDate), "day")}
                 </p>
               </div>
             </div>
@@ -241,7 +247,10 @@ function HotelDetails() {
           <PaymentModal
             close={() => setPaymentPopupActive(false)}
             hotelName={hotelData.name}
-            hotelPrice={selectedRoom?.price}
+            hotelPrice={
+              (selectedRoom.price ?? 0) *
+              dayjs(checkOutDate).diff(dayjs(checkInDate), "day")
+            }
             handleBooking={handleBooking}
             handleBookingCashOnDelivery={handleBookingCashOnDelivery}
           />

@@ -142,6 +142,7 @@ function BusDetails() {
           {seatsData ? (
             seatsData.map((seat) => (
               <BookingCard
+                type={"bus"}
                 key={seat.id}
                 id={seat.id}
                 label={seat.seatType + " seat"}
