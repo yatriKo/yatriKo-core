@@ -6,6 +6,7 @@ interface TokenType {
   accessToken: string;
   expiresIn: string;
   role: string;
+  name: string;
 }
 
 interface AuthContextType {
@@ -13,6 +14,7 @@ interface AuthContextType {
   setToken: (token: TokenType | null) => void;
   getAccessToken: () => string | null;
   getRole: () => string | null;
+  getName: () => string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,9 +45,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getAccessToken = () => token?.accessToken || null;
   const getRole = () => token?.role || null;
+  const getName = () => token?.name || null;
 
   return (
-    <AuthContext.Provider value={{ token, setToken, getAccessToken, getRole }}>
+    <AuthContext.Provider
+      value={{ token, setToken, getAccessToken, getRole, getName }}
+    >
       {children}
     </AuthContext.Provider>
   );

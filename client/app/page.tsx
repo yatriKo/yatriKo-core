@@ -51,7 +51,7 @@ export default function YatriLandingPage() {
             />
             <button
               type="submit"
-              className="search-btn bg-transparent text-black hover:scale-105 transition-transform"
+              className="search-btn bg-transparent text-black hover:scale-105 transition-transform cursor-pointer"
             >
               <Search />
             </button>

@@ -23,8 +23,8 @@ export class HotelService {
           },
           where: {
             OR: [
-              { location: { contains: search || '' } },
-              { name: { contains: search || '' } },
+              { location: { contains: search || '', mode: 'insensitive' } },
+              { name: { contains: search || '', mode: 'insensitive' } },
             ],
           },
           take: limit,

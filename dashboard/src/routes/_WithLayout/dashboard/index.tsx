@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,12 +9,12 @@ import {
   Legend,
 } from "chart.js";
 import {
+  useDeleteBooking,
   useDeleteBookingBus,
   useGetDashboardDetail,
   useGetDashboardDetailBus,
   useGetStats,
 } from "./-queries";
-import { useDeleteHotel } from "../hotel/-queries";
 import { useState } from "react";
 import { queryClient } from "../../__root";
 import {
@@ -51,7 +51,7 @@ function RouteComponent() {
     useGetDashboardDetailBus();
 
   // posting data
-  const { mutateAsync, isPending } = useDeleteHotel();
+  const { mutateAsync, isPending } = useDeleteBooking();
   const { mutateAsync: mutateAsyncBus, isPending: isDeletingBus } =
     useDeleteBookingBus();
 
@@ -60,7 +60,7 @@ function RouteComponent() {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [hotelId, setHotelId] = useState(0);
 
-  // function to delete hotel
+  // function to delete hotel booking
   const deleteHotel = () => {
     mutateAsync(hotelId, {
       onSuccess: () => {
@@ -69,7 +69,7 @@ function RouteComponent() {
     });
   };
 
-  // function to delete bus
+  // function to delete bus booking
   const deleteBus = () => {
     mutateAsyncBus(hotelId, {
       onSuccess: () => {
