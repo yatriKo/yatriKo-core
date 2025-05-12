@@ -44,7 +44,7 @@ model Hotel {
   image           String[]
 
   rooms         Room[]
-  dashboardUser dashboardUser? @relation(fields: [dashboardUserId], references: [id])
+  dashboardUser dashboardUser? @relation(fields: [dashboardUserId], references: [id], onDelete: Cascade)
 }
 
 model Room {

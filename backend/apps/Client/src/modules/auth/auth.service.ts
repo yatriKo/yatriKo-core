@@ -38,7 +38,7 @@ export class AuthService {
     try {
       const token = await this.jwtService.signAsync(payload);
       const accessToken = 'Bearer ' + token;
-      return { accessToken, expiresIn: '7d', role: user.role };
+      return { accessToken, expiresIn: '7d', role: user.role, name: user.name };
     } catch (error) {
       throw new Error('JWT ERROR: ' + error);
     }

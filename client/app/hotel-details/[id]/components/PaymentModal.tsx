@@ -18,7 +18,7 @@ export const PaymentModal = ({
   close: (value: SetStateAction<boolean>) => void;
   handleBookingCashOnDelivery: () => void;
   handleBooking: () => void;
-  hotelPrice?: string;
+  hotelPrice?: number;
   busPrice?: string;
   busFrom?: string;
   busTo?: string;

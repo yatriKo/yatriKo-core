@@ -41,10 +41,12 @@ function App() {
                   }}
                   className="border-none outline-none p-[5px] flex-1 bg-transparent text-black placeholder:font-bold placeholder:text-[#264653] placeholder:font-['Newsreader',serif]"
                 />
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="text-[#264653] text-lg ml-[10px]"
-                />
+                <button type="submit" className="cursor-pointer">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="text-[#264653] text-lg ml-[10px]"
+                  />
+                </button>
               </div>
             </form>
           </div>
@@ -57,7 +59,7 @@ function App() {
               <FontAwesomeIcon
                 icon={faBed}
                 className={`text-[30px] ${
-                  isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
+                  !isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
                 }`}
               />
               <span className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 bg-[#264653] text-[#FEFAE0] py-[6px] px-[10px] rounded-md text-[13px] font-bold whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible">
@@ -71,7 +73,7 @@ function App() {
               <FontAwesomeIcon
                 icon={faBus}
                 className={`text-[30px] ${
-                  !isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
+                  isHotelSearch ? "text-[#26465333]" : "text-[#264653]"
                 }`}
               />
               <span className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 bg-[#264653] text-[#FEFAE0] py-[6px] px-[10px] rounded-md text-[13px] font-bold whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible">
@@ -88,32 +90,40 @@ function App() {
 
         {/* Grid of 9 Images in 3x3 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-4">
-          {isHotelSearch
-            ? isFetchingHotels
-              ? "Loading"
-              : hotelsData.data.map((data) => {
-                  return (
-                    <SearchCard
-                      href={`/hotel-details/${data.id}`}
-                      image={data.image[0]}
-                      name={data.name}
-                      key={data.name}
-                    />
-                  );
-                })
-            : isFetchingBus
-            ? "Loading"
-            : busData.data.map((data) => {
+          {isHotelSearch ? (
+            isFetchingHotels ? (
+              "Loading"
+            ) : hotelsData.data.length === 0 ? (
+              <p className="col-span-full">{`Sorry! We could not find any hotels matching "${search}". Please try with a different keyword.`}</p>
+            ) : (
+              hotelsData.data.map((data) => {
                 return (
                   <SearchCard
+                    href={`/hotel-details/${data.id}`}
                     image={data.image[0]}
-                    href={`/bus-details/${data.id}`}
-                    name={`${data.from} - ${data.to}`}
-                    addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
-                    key={data.date}
+                    name={data.name}
+                    key={data.name}
                   />
                 );
-              })}
+              })
+            )
+          ) : isFetchingBus ? (
+            "Loading"
+          ) : busData.data.length === 0 ? (
+            <p className="col-span-full">{`Sorry! We could not find any bus routes matching "${search}". Please try with a different keyword.`}</p>
+          ) : (
+            busData.data.map((data) => {
+              return (
+                <SearchCard
+                  image={data.image[0]}
+                  href={`/bus-details/${data.id}`}
+                  name={`${data.from} - ${data.to}`}
+                  addInfo={`${dayjs(data.date).format("D MMMM YYYY, HH:mm")}`}
+                  key={data.date}
+                />
+              );
+            })
+          )}
         </div>
       </main>
     </div>

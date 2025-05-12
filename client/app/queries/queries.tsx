@@ -60,8 +60,8 @@ export const useBookHotel = () => {
         roomId: data.roomId,
         dateFrom: checkIn,
         dateTo: checkOut,
-        clientEmail: data.email ?? undefined,
-        clientName: data.clientName ?? undefined,
+        clientEmail: data.email ? data.email : undefined,
+        clientName: data.clientName ? data.clientName : undefined,
         paymentStatus: data.paymentStatus ?? true,
       });
       return response;
@@ -94,8 +94,8 @@ export const useBookBus = () => {
     mutationFn: async (data: any) => {
       const response = await instance.post("/booking-bus", {
         busSeatId: data.id,
-        clientEmail: data.email ?? undefined,
-        clientName: data.clientName ?? undefined,
+        clientEmail: data.email ? data.email : undefined,
+        clientName: data.clientName ? data.clientName : undefined,
         paymentStatus: data.paymentStatus ?? true,
       });
       return response;
