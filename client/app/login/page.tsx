@@ -74,11 +74,8 @@ const YatriLoginPage = () => {
     } catch (error) {
       setLoginError(true);
       toast(error?.response.data.message);
-      console.log(error);
     }
   };
-
-  console.log(role);
 
   const handleLoginSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -89,7 +86,6 @@ const YatriLoginPage = () => {
       router.push("/");
     } catch (error) {
       setLoginError(true);
-      console.log(error);
     }
   };
 

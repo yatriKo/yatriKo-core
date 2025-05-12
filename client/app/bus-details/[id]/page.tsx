@@ -8,10 +8,12 @@ import {
 } from "@/app/queries/queries";
 import BookingCard from "@/components/booking-card";
 import dayjs from "dayjs";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PaymentModal } from "./components/PaymentModal";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
 function BusDetails() {
   const { id } = useParams();
@@ -28,6 +30,9 @@ function BusDetails() {
   const [paymentPopupActive, setPaymentPopupActive] = useState(false);
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
+
+  const searchParams = useSearchParams();
+  const activeFilter = searchParams.get("search");
 
   const { mutate } = useBookBus();
 
@@ -85,9 +90,19 @@ function BusDetails() {
       <p>loading...</p>
     </div>
   ) : (
-    <div className="font-sans m-0 p-0 text-center text-[#264653] min-h-screen overflow-x-hidden bg-[#f5f5f5]">
+    <div className="font-sans m-0 p-0 text-[#264653] min-h-screen overflow-x-hidden bg-[#f5f5f5]">
       <main className="py-[100px]">
         {/* Header with booking icons */}
+        <Link
+          href={{
+            pathname: "/destinations",
+            query: { from: "bus", search: activeFilter },
+          }}
+          className="pl-4 items-center text-2xl mb-4 flex gap-1"
+        >
+          <ChevronLeft size={32} />
+          Back
+        </Link>
         <header className="flex items-center justify-between p-[10px_20px] bg-[rgba(254,250,224,0.3)]">
           <div className="flex flex-col items-start">
             <div className="text-[28px] font-['Newsreader',serif] font-bold text-[#264653]">

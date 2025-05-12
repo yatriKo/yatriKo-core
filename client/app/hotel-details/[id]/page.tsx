@@ -9,14 +9,19 @@ import {
 import BookingCard from "@/components/booking-card";
 import { DateRangePicker } from "@/components/date-picker-range";
 import dayjs from "dayjs";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { PaymentModal } from "./components/PaymentModal";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 
 function HotelDetails() {
   const { id } = useParams();
   const { token } = useAuth();
+
+  const searchParams = useSearchParams();
+  const activeFilter = searchParams.get("search");
 
   const { data: hotelData, isFetching } = useGetHotelDetails(+id);
   const [confirmationPopupActive, setConfirmationPopupActive] = useState(false);
@@ -101,6 +106,16 @@ function HotelDetails() {
     <div className="font-sans m-0 p-0 text-center text-[#264653] min-h-screen overflow-x-hidden bg-[#f5f5f5]">
       <main className="py-[100px]">
         {/* Header with booking icons */}
+        <Link
+          href={{
+            pathname: "/destinations",
+            query: { search: activeFilter },
+          }}
+          className="pl-4 items-center text-2xl mb-4 flex gap-1"
+        >
+          <ChevronLeft size={32} />
+          Back
+        </Link>
         <header className="flex items-center justify-between p-[10px_20px] bg-[rgba(254,250,224,0.3)]">
           <div className="flex flex-col items-start">
             <div className="text-[28px] font-['Newsreader',serif] font-bold text-[#264653]">
