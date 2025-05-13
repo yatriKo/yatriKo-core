@@ -24,6 +24,7 @@ import { Button } from "../../../../../components/ui/button";
 import { useEffect, useState } from "react";
 import {
   useGetIndividualHotel,
+  usePatchHotelInfo,
   useUploadHotelImage,
   useUploadHotelInfo,
 } from "../-queries";
@@ -145,7 +146,7 @@ function RouteComponent() {
   };
 
   const { mutateAsync: uploadHotelImage } = useUploadHotelImage();
-  const { mutateAsync: uploadHotel } = useUploadHotelInfo();
+  const { mutateAsync: uploadHotel } = usePatchHotelInfo(edit);
 
   const onSubmit = (data: HotelFormValues) => {
     const formData = new FormData();

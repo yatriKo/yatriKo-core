@@ -99,3 +99,12 @@ export const useUploadHotelInfo = () => {
     },
   });
 };
+
+export const usePatchHotelInfo = (id: string) => {
+  return useMutation({
+    mutationFn: async (hotelInfo: HotelInfo) => {
+      const { data } = await instance.patch(`/hotel/${id}`, hotelInfo);
+      return data;
+    },
+  });
+};
