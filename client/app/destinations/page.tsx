@@ -13,7 +13,9 @@ function App() {
   const searchParams = useSearchParams();
   const activeFilter = searchParams.get("from");
   const search = searchParams.get("search");
-  const [searchVal, setSearchVal] = useState(search || "");
+  const [searchVal, setSearchVal] = useState(
+    !search && search === "null" ? "" : search
+  );
 
   const [isHotelSearch, setIsHotelSearch] = useState(
     activeFilter !== "bus" ? true : false
