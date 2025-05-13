@@ -17,12 +17,13 @@ import Link from "next/link";
 
 function BusDetails() {
   const { id } = useParams();
-  const { token } = useAuth();
+  const { token, getRole } = useAuth();
 
   const [showErrors, setShowErrors] = useState(false);
 
   // Validation function
   const isFormValid = () => {
+    if (getRole() == "User") return true;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return clientName.trim() !== "" && emailRegex.test(email);
   };
