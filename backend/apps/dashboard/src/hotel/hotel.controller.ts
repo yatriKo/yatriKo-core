@@ -69,8 +69,12 @@ export class HotelController {
 
   // Updating the hotel detail
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHotelDto: UpdateHotelDto) {
-    return this.hotelService.update(+id, updateHotelDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateHotelDto: UpdateHotelDto,
+    @Request() req,
+  ) {
+    return this.hotelService.update(+id, updateHotelDto, req.user.sub);
   }
 
   // Deleting the hotel

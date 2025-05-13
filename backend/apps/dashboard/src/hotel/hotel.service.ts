@@ -88,15 +88,19 @@ export class HotelService {
   }
 
   // updating the hotel info
-  async update(id: number, updateHotelDto: UpdateHotelDto) {
-    const { location, phoneNumber, name, roomType, hotelImage } =
+  async update(hotelId: number, updateHotelDto: UpdateHotelDto, id: number) {
+    const { location, name, hotelImage, phoneNumber, roomType } =
       updateHotelDto;
 
-    const hotel = await this.prismaService.hotel.update({
-      where: { id },
+    await this.prismaService.hotel.deleteMany({
+      where: { id: hotelId },
+    });
+
+    // using prisma to fetch the hotel detail
+    const hotel = await this.prismaService.hotel.create({
       data: {
-        dashboardUserId: 1,
         name,
+        dashboardUserId: id,
         location,
         phoneNumber,
         image: hotelImage,
@@ -105,7 +109,7 @@ export class HotelService {
             Array.from({ length: room.numberOfRoom }, () => ({
               roomType: room.type,
               price: room.price,
-              image: room.roomImage,
+              roomImage: room.roomImage,
             })),
           ),
         },
@@ -115,6 +119,7 @@ export class HotelService {
       },
     });
 
+    //returning the data fetched
     return hotel;
   }
 
