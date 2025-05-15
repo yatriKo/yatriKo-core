@@ -5,7 +5,7 @@ YatriKo is a comprehensive travel booking platform designed to help users plan a
 ## Features
 
 - **Hotel Booking**: Find and book hotels worldwide with real-time availability and pricing.
-- **Bus Booking**: Search for flights based on destination, date, and budget.
+- **Bus Booking**: Search for Bus based on destination, date, and budget.
 - **User Accounts**: Create and manage your account to track your bookings and preferences.
 - **Travel Agent Account**: Create and manage your account to track your clients booking and prefrences.
 - **Hotel Owner Account**: Places their hotel along with their room and all their contact detail.
