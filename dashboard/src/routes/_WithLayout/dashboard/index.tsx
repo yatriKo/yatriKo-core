@@ -80,7 +80,12 @@ function RouteComponent() {
 
   // total earning from the hotel
   const totalPrice =
-    data?.data.reduce((acc, item) => acc + item.room.price, 0) || 0;
+    data?.data.reduce(
+      (acc, item) =>
+        acc +
+        item.room.price * dayjs(item.dateTo).diff(dayjs(item.dateFrom), "day"),
+      0
+    ) || 0;
 
   // total earning from the bus
   const totalPriceBus =
