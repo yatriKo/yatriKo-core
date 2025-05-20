@@ -26,6 +26,10 @@ export function DateRangePicker({
   });
 
   const handleChange = (range: DateRange | undefined) => {
+    if (range?.from && range.to) {
+      const isSameDay = range.from.toDateString() === range.to.toDateString();
+      if (isSameDay) return;
+    }
     setDate(range);
 
     if (range?.from && range.to) {

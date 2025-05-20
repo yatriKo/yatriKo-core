@@ -3,6 +3,7 @@ export default function BookingCard({
   id,
   label,
   price,
+  total,
   image,
   onBookingClick,
 }: {
@@ -10,6 +11,7 @@ export default function BookingCard({
   id: number;
   label: string;
   price: number;
+  total?: string | number;
   image?: string;
   onBookingClick: any;
 }) {
@@ -24,7 +26,9 @@ export default function BookingCard({
       )}
       <div className="mt-1 font-semibold text-sm">{label}</div>
       <div className="text-xs">
-        Rs. {price} {type == "bus" ? "" : "per night"}
+        {type == "hotel"
+          ? `Rs. ${total} (Rs. ${price} per night)`
+          : `Rs. ${price}`}
       </div>
       <button
         onClick={() => onBookingClick(id, label, price)}

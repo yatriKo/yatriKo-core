@@ -186,6 +186,10 @@ function HotelDetails() {
                 id={room.id}
                 label={room.roomType}
                 price={room.price}
+                total={
+                  room.price *
+                  dayjs(checkOutDate).diff(dayjs(checkInDate), "day")
+                }
                 image={room.image[0]}
                 onBookingClick={onBookingClick}
               />
