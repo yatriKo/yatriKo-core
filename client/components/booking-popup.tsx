@@ -101,7 +101,13 @@ function BookingPopup({ onClose }) {
                       )} - ${dayjs(booking.dateTo).format(
                         "D MMM YYYY"
                       )}`}</TableCell>
-                      <TableCell>{`Rs. ${booking.room.price}`}</TableCell>
+                      <TableCell>{`Rs. ${
+                        booking.room.price *
+                        dayjs(booking.dateTo).diff(
+                          dayjs(booking.dateFrom),
+                          "day"
+                        )
+                      }`}</TableCell>
                       <TableCell>
                         {booking.paymentStatus ? "Paid" : "Unpaid"}
                       </TableCell>
@@ -118,7 +124,13 @@ function BookingPopup({ onClose }) {
                       )} - ${dayjs(booking.dateTo).format(
                         "D MMM YYYY"
                       )}`}</TableCell>
-                      <TableCell>{`Rs. ${booking.room.price}`}</TableCell>
+                      <TableCell>{`Rs. ${
+                        booking.room.price *
+                        dayjs(booking.dateTo).diff(
+                          dayjs(booking.dateFrom),
+                          "day"
+                        )
+                      }`}</TableCell>
                       <TableCell>
                         {booking.paymentStatus ? "Paid" : "Unpaid"}
                       </TableCell>
