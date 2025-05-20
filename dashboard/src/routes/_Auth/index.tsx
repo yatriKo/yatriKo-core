@@ -3,6 +3,13 @@ import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLogin, useSignUp } from "./-queries";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/select.tsx";
 
 export const Route = createFileRoute("/_Auth/")({
   component: Index,
@@ -116,12 +123,15 @@ function Index() {
                 className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
                 onChange={(e) => setSignUpEmail(e.target.value)}
               />
-              <input
-                type="text"
-                placeholder="Enter Role(HotelOwner or BusOwner)"
-                className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none text-black"
-                onChange={(e) => setSignUpRole(e.target.value)}
-              />
+              <Select onValueChange={(value) => setSignUpRole(value)}>
+                <SelectTrigger className="bg-[#eee] border-none my-2 py-2 px-4 text-sm rounded-lg w-full outline-none">
+                  <SelectValue placeholder="Select Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="HotelOwner">Hotel Owner</SelectItem>
+                  <SelectItem value="BusOwner">Bus Owner</SelectItem>
+                </SelectContent>
+              </Select>
               <input
                 type="password"
                 placeholder="Password"
